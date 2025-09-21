@@ -1,0 +1,41 @@
+GET http://localhost:5113/api/items
+
+###
+
+POST http://localhost:5113/api/items
+Content-Type: application/json
+
+{
+    "name": "Glove of UUID",
+    "description": "A glove that grants the wearer the ability to catch any item by UUID",
+    "value": 89,
+    "weight": 1,
+    "rarity": "rare",
+    "type": "potion",
+    "properties": ["magical","consumable"]
+}
+
+###
+
+POST http://localhost:5113/api/bags
+Content-Type: application/json
+
+{
+    "name": "Un autre sac",
+    "description": "Un sac qui peut contenir 100 lb",
+    "capacity": 100,
+    "content": ["ff02fc8e-0d5f-444a-7d18-08dcdd7725dd"]
+}
+
+###
+
+GET http://localhost:5113/api/bags
+
+###
+
+GET http://localhost:5113/api/bags/9A8526E7-F123-4F90-609D-08DCDD74D8F7
+
+###
+
+DELETE http://localhost:5113/api/bags/9A8526E7-F123-4F90-609D-08DCDD74D8F7
+
