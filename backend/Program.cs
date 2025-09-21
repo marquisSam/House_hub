@@ -5,6 +5,8 @@ using HouseHub.Models;
 using HouseHub.Services;
 using HouseHub.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +21,28 @@ app.Run();
 // Méthode pour configurer les services
 static void ConfigureServices(IServiceCollection services, WebApplicationBuilder builder)
 {
-    services.AddControllers();
+    // Build EDM Model for OData
+    var modelBuilder = new ODataConventionModelBuilder();
+    modelBuilder.EntitySet<Todo>("Todos");
+    modelBuilder.EntitySet<Event>("Events");
+    var edmModel = modelBuilder.GetEdmModel();
+
+    services.AddControllers()
+        .AddOData(options => options
+            .Select()
+            .Filter()
+            .OrderBy()
+            .Expand()
+            .Count()
+            .SetMaxTop(100)
+            .AddRouteComponents("odata", edmModel));
+    
     services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "HouseHub API", Version = "v1" });
+        c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+    });
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     services.AddExceptionHandler<GlobalExceptionHandler>();
 
