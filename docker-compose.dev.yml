@@ -1,0 +1,23 @@
+# Development overrides
+version: "3.8"
+
+services:
+  backend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./backend:/app/src
+    command:
+      ["dotnet", "watch", "run", "--project", "/app/src/familyHub.csproj"]
+
+  frontend:
+    volumes:
+      - ./house_hub_fea/src:/app/src:cached
+      - ./house_hub_fea/angular.json:/app/angular.json
+      - ./house_hub_fea/package.json:/app/package.json
+      - /app/node_modules
+
+  # Disable production frontend in development
+  frontend-prod:
+    profiles:
+      - disabled

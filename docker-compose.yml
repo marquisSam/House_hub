@@ -1,0 +1,103 @@
+version: "3.8"
+
+services:
+  # SQL Server Database
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: househub-database
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: YourStrong@Passw0rd
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - househub-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: househub-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - DbSettings__ConnectionString=Server=database,1433;Database=HouseHubApiDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
+      - CORS__AllowedOrigins=http://localhost:4200,http://frontend:80
+    ports:
+      - "5000:8080"
+    volumes:
+      - ./backend/logs:/app/logs # Application logs accessible from host
+      - uploads_temp:/app/temp # Temporary file processing
+      - backend_config:/app/config # Configuration files persistence
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - househub-network
+    restart: unless-stopped
+
+  # Frontend (Angular)
+  frontend:
+    build:
+      context: ./house_hub_fea
+      dockerfile: Dockerfile
+      target: development
+    container_name: househub-frontend
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://localhost:5000
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./house_hub_fea/src:/app/src # Hot reload for development
+      - ./house_hub_fea/angular.json:/app/angular.json
+      - ./house_hub_fea/package.json:/app/package.json
+      - /app/node_modules # Preserve node_modules in container
+      - frontend_dist:/app/dist # Build output persistence
+    depends_on:
+      - backend
+    networks:
+      - househub-network
+    restart: unless-stopped
+
+  # Frontend Production Build
+  frontend-prod:
+    build:
+      context: ./house_hub_fea
+      dockerfile: Dockerfile
+      target: production
+    container_name: househub-frontend-prod
+    environment:
+      - API_URL=http://localhost:5000
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - househub-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  sqlserver_data: # Database persistence
+  uploads_temp: # Temporary file processing
+  backend_config: # Backend configuration files
+  frontend_dist: # Frontend build output
+
+networks:
+  househub-network:
+    driver: bridge

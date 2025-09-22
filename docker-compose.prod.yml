@@ -1,0 +1,21 @@
+# Production overrides
+version: "3.8"
+
+services:
+  backend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "443:443"
+      - "80:80"
+
+  # Disable development frontend in production
+  frontend:
+    profiles:
+      - disabled
+
+  # Enable production frontend
+  frontend-prod:
+    profiles:
+      - production
