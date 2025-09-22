@@ -1,0 +1,47 @@
+<div class="todo-container">
+  <h1>Todo Management</h1>
+
+  <div class="grid">
+    <div class="data">
+      <h2>Current Todos</h2>
+      <div class="todo-list">
+        @for (todo of todos(); track todo.id) {
+        <div class="todo-item">
+          <h3>{{ todo.title }}</h3>
+          <p>{{ todo.description }}</p>
+          <p><strong>Due:</strong> {{ todo.dueDate | date }}</p>
+          <p><strong>Priority:</strong> {{ todo.priority }}</p>
+          <p><strong>Category:</strong> {{ todo.category }}</p>
+          <span class="status" [class]="'status-' + (todo.isCompleted ? 'completed' : 'pending')">
+            {{ todo.isCompleted ? 'Completed' : 'Pending' }}
+          </span>
+        </div>
+        } @empty {
+        <p>No todos found.</p>
+        }
+      </div>
+    </div>
+
+    <div class="post">
+      <h2>Add New Todo</h2>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <label for="Title">Title</label>
+        <input type="text" id="Title" formControlName="Title" />
+
+        <label for="Description">Description</label>
+        <input type="text" id="Description" formControlName="Description" />
+
+        <label for="DueDate">Due Date</label>
+        <input type="date" id="DueDate" formControlName="DueDate" />
+
+        <label for="Priority">Priority</label>
+        <input type="number" id="Priority" formControlName="Priority" min="1" max="5" />
+
+        <label for="Category">Category</label>
+        <input type="text" id="Category" formControlName="Category" />
+
+        <button type="submit" [disabled]="form.invalid">Add Todo</button>
+      </form>
+    </div>
+  </div>
+</div>

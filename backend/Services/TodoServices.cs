@@ -102,6 +102,8 @@ namespace HouseHub.Services
 
         public async Task<Todo> DeleteAsync(Guid id)
         {
+            _logger.LogInformation($"Attempting to delete todo with id: {id}");
+            Console.WriteLine($"Attempting to delete todo with id: {id}");
             var todo = await _context.Todos.FindAsync(id);
             if (todo == null)
             {

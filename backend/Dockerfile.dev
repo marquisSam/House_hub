@@ -1,0 +1,26 @@
+# Development Dockerfile with hot reload support
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS development
+
+# Install dotnet tools
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+WORKDIR /app
+
+# Copy project file and restore dependencies
+COPY familyHub.csproj .
+RUN dotnet restore
+
+# Copy source code
+COPY . .
+
+# Expose ports
+EXPOSE 5000
+EXPOSE 5001
+
+# Set environment for development
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:5000
+
+# Use dotnet watch for hot reload
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5000"]

@@ -3,12 +3,19 @@ version: "3.8"
 
 services:
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
     volumes:
-      - ./backend:/app/src
-    command:
-      ["dotnet", "watch", "run", "--project", "/app/src/familyHub.csproj"]
+      - ./backend:/app:cached
+      - /app/bin
+      - /app/obj
+    ports:
+      - "5001:5000"
+    command: ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5000"]
 
   frontend:
     volumes:
