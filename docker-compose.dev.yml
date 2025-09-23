@@ -30,7 +30,22 @@ services:
       - ./house_hub_fea/tsconfig.app.json:/app/tsconfig.app.json:cached
       - ./house_hub_fea/tsconfig.spec.json:/app/tsconfig.spec.json:cached
       - /app/node_modules
-    command: ["npm", "start", "--", "--host", "0.0.0.0", "--port", "4200", "--poll", "2000", "--live-reload", "true", "--watch", "true"]
+    command:
+      [
+        "npm",
+        "start",
+        "--",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "4200",
+        "--poll",
+        "2000",
+        "--live-reload",
+        "true",
+        "--watch",
+        "true",
+      ]
 
   # Disable production frontend in development
   frontend-prod:
