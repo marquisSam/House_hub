@@ -71,7 +71,9 @@
               "port": 4200,
               "poll": 2000,
               "liveReload": true,
-              "watch": true
+              "watch": true,
+              "allowedHosts": ["all"],
+              "disableHostCheck": true
             }
           },
           "defaultConfiguration": "development"
