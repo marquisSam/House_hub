@@ -18,11 +18,19 @@ services:
     command: ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5000"]
 
   frontend:
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - ./house_hub_fea/src:/app/src:cached
-      - ./house_hub_fea/angular.json:/app/angular.json
-      - ./house_hub_fea/package.json:/app/package.json
+      - ./house_hub_fea/angular.json:/app/angular.json:cached
+      - ./house_hub_fea/package.json:/app/package.json:cached
+      - ./house_hub_fea/tsconfig.json:/app/tsconfig.json:cached
+      - ./house_hub_fea/tsconfig.app.json:/app/tsconfig.app.json:cached
+      - ./house_hub_fea/tsconfig.spec.json:/app/tsconfig.spec.json:cached
       - /app/node_modules
+    command: ["npm", "start", "--", "--host", "0.0.0.0", "--port", "4200", "--poll", "2000", "--live-reload", "true", "--watch", "true"]
 
   # Disable production frontend in development
   frontend-prod:

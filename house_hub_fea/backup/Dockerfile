@@ -17,7 +17,7 @@ COPY . .
 EXPOSE 4200
 
 # Start development server with hot reload
-CMD ["npm", "start", "--", "--host", "0.0.0.0", "--port", "4200", "--poll", "2000", "--live-reload", "true", "--watch", "true"]
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--port", "4200", "--poll", "2000"]
 
 # Build stage
 FROM node:24-alpine AS build

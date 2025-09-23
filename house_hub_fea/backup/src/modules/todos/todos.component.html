@@ -1,20 +1,29 @@
 <div class="todo-container">
   <h1>Todo Management</h1>
 
+  <!-- NgxSpinner Component -->
+  <ngx-spinner name="todoSpinner" [fullScreen]="false" [zIndex]="99999"> </ngx-spinner>
+
+  <!-- Error handling -->
+  @if (error()) {
+  <div class="error-message">
+    <p>{{ error() }}</p>
+    <button (click)="clearError()">Dismiss</button>
+  </div>
+  }
+
   <div class="grid">
     <div class="data">
-      <h2>Current Todos</h2>
+      <h2>Current Todos ({{ todosCount() }})</h2>
       <div class="todo-list">
-        @for (todo of todos(); track todo.id) {
+        @for (todo of todos(); track todo.Id) {
         <div class="todo-item">
-          <h3>{{ todo.title }}</h3>
-          <p>{{ todo.description }}</p>
-          <p><strong>Due:</strong> {{ todo.dueDate | date }}</p>
-          <p><strong>Priority:</strong> {{ todo.priority }}</p>
-          <p><strong>Category:</strong> {{ todo.category }}</p>
-          <span class="status" [class]="'status-' + (todo.isCompleted ? 'completed' : 'pending')">
-            {{ todo.isCompleted ? 'Completed' : 'Pending' }}
-          </span>
+          <h3>{{ todo.Title }}</h3>
+          <p>{{ todo.Description }}</p>
+          <p>Priority: {{ todo.Priority }}</p>
+          <p>Category: {{ todo.Category }}</p>
+          <p>Due Date: {{ todo.DueDate }}</p>
+          <p>Status: {{ todo.IsCompleted ? 'Completed' : 'Pending' }}</p>
         </div>
         } @empty {
         <p>No todos found.</p>
@@ -40,7 +49,9 @@
         <label for="Category">Category</label>
         <input type="text" id="Category" formControlName="Category" />
 
-        <button type="submit" [disabled]="form.invalid">Add Todo</button>
+        <button type="submit" [disabled]="form.invalid || isLoading()">
+          {{ isLoading() ? 'Adding...' : 'Add Todo' }}
+        </button>
       </form>
     </div>
   </div>

@@ -1,0 +1,39 @@
+# This file is automatically loaded by Docker Compose
+# Copy the dev overrides here for automatic development mode
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+    volumes:
+      - ./backend:/app:cached
+      - /app/bin
+      - /app/obj
+    ports:
+      - "5001:5000"
+    command: ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5000"]
+
+  frontend:
+    build:
+      context: ./house_hub_fea
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./house_hub_fea/src:/app/src:cached
+      - ./house_hub_fea/angular.json:/app/angular.json
+      - ./house_hub_fea/package.json:/app/package.json
+      - ./house_hub_fea/package-lock.json:/app/package-lock.json
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["npm", "start"]
+
+  # Disable production frontend in development
+  frontend-prod:
+    profiles:
+      - disabled

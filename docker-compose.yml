@@ -59,12 +59,17 @@ services:
     environment:
       - NODE_ENV=development
       - API_URL=http://localhost:5000
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     ports:
       - "4200:4200"
     volumes:
-      - ./house_hub_fea/src:/app/src # Hot reload for development
-      - ./house_hub_fea/angular.json:/app/angular.json
-      - ./house_hub_fea/package.json:/app/package.json
+      - ./house_hub_fea/src:/app/src:cached # Hot reload for development
+      - ./house_hub_fea/angular.json:/app/angular.json:cached
+      - ./house_hub_fea/package.json:/app/package.json:cached
+      - ./house_hub_fea/tsconfig.json:/app/tsconfig.json:cached
+      - ./house_hub_fea/tsconfig.app.json:/app/tsconfig.app.json:cached
+      - ./house_hub_fea/tsconfig.spec.json:/app/tsconfig.spec.json:cached
       - /app/node_modules # Preserve node_modules in container
       - frontend_dist:/app/dist # Build output persistence
     depends_on:
