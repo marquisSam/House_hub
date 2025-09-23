@@ -11,7 +11,7 @@ export const routes: Routes = [
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'todos', component: TodosComponent },
-    ]
+    ],
   },
   { path: '**', redirectTo: '' }, // Wildcard route for 404 page
 ];
