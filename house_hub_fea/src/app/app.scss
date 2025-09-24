@@ -1,6 +1,84 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+.main-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: #001529;
+  transition: width 0.3s;
+  width: 256px;
+  min-height: 100vh;
+
+  &.collapsed {
+    width: 80px;
+  }
+}
+
+.collapse-btn {
+  margin: 16px;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  width: calc(100% - 32px);
+
+  &:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
+}
+
+.sidebar.collapsed .collapse-btn {
+  width: 48px;
+  margin: 16px auto;
+}
+.content {
+  flex: 1;
+  padding: 24px;
+  background-color: #f0f2f5;
+  overflow-y: auto;
+}
+
+// Override ng-zorro menu styles
+:host ::ng-deep {
+  .ant-menu {
+    background-color: transparent;
+    border-right: none;
+
+    .ant-menu-item {
+      color: rgba(255, 255, 255, 0.65);
+
+      &:hover {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      &.ant-menu-item-selected {
+        color: #fff;
+        background-color: #1890ff;
+      }
+
+      .anticon {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    height: 100vh;
+  }
+
+  .content {
+    margin-left: 256px;
+  }
+
+  .sidebar.collapsed + .content {
+    margin-left: 80px;
+  }
 }

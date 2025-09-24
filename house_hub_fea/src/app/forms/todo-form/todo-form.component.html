@@ -1,0 +1,42 @@
+<div class="todo-form-container">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-field" id="title-field">
+      <label for="Title">Title</label>
+      <input nz-input placeholder="Title" type="text" id="Title" formControlName="Title" />
+    </div>
+
+    <div class="form-field" id="description-field">
+      <label for="Description">Description</label>
+      <textarea rows="4" nz-input formControlName="Description"></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="DueDate">Due Date</label>
+      <input nz-input type="date" id="DueDate" formControlName="DueDate" />
+    </div>
+
+    <div class="form-field">
+      <label for="Priority">Priority (from signal input: hoho)</label>
+      <input nz-input type="number" id="Priority" formControlName="Priority" min="1" max="5" />
+    </div>
+
+    <div class="form-field">
+      <label for="Category">Category</label>
+      <input nz-input type="text" id="Category" formControlName="Category" />
+    </div>
+  </form>
+  <div class="form-actions">
+    @if (isEditMode()) {
+    <button nz-button nzType="primary" nzSize="large" (click)="cancelEdit()">Annuler</button>
+    <button nz-button nzType="primary" nzSize="large" (click)="cancelEdit()">
+      <nz-icon nzType="save" nzTheme="outline" />
+      Sauvegarder
+    </button>
+    } @else {
+    <button nz-button nzType="primary" nzSize="large" (click)="toggleEditMode()">
+      <nz-icon nzType="form" nzTheme="outline" />
+      Édité ce Todo
+    </button>
+    }
+  </div>
+</div>

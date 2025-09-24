@@ -1,14 +1,7 @@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject, computed } from '@angular/core';
 import { Todo } from '../models/todosModel';
-import {
-  patchState,
-  signalStore,
-  type,
-  withComputed,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, type, withComputed, withMethods, withState } from '@ngrx/signals';
 import { TodoService } from '../services/todo.service';
 import { pipe, switchMap, tap, catchError, EMPTY, finalize, delay } from 'rxjs';
 import {
@@ -22,6 +15,7 @@ import {
 
 interface TodoState {
   todoIsLoading: boolean;
+  todoCreationPending: boolean;
   error: string | null;
 }
 
@@ -36,6 +30,7 @@ const TodoStore = signalStore(
   withState<TodoState>({
     todoIsLoading: false,
     error: null,
+    todoCreationPending: false,
   }),
   withMethods((store, todoService = inject(TodoService)) => ({
     loadTodos: rxMethod<void>(
@@ -63,7 +58,7 @@ const TodoStore = signalStore(
 
     createTodo: rxMethod<any>(
       pipe(
-        tap(() => patchState(store, { todoIsLoading: true, error: null })),
+        tap(() => patchState(store, { todoCreationPending: true, error: null })),
         switchMap((todoData) =>
           todoService.createTodo(todoData).pipe(
             tap((newTodo: Todo) => {
@@ -76,7 +71,7 @@ const TodoStore = signalStore(
               });
               return EMPTY;
             }),
-            finalize(() => patchState(store, { todoIsLoading: false }))
+            finalize(() => patchState(store, { todoCreationPending: false }))
           )
         )
       )
@@ -101,12 +96,8 @@ const TodoStore = signalStore(
   withComputed(({ todoEntities, error }) => ({
     todosCount: computed(() => todoEntities().length),
     hasError: computed(() => !!error()),
-    completedTodos: computed(() =>
-      todoEntities().filter((todo: Todo) => todo.IsCompleted)
-    ),
-    pendingTodos: computed(() =>
-      todoEntities().filter((todo: Todo) => !todo.IsCompleted)
-    ),
+    completedTodos: computed(() => todoEntities().filter((todo: Todo) => todo.IsCompleted)),
+    pendingTodos: computed(() => todoEntities().filter((todo: Todo) => !todo.IsCompleted)),
   }))
 );
 

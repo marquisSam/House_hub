@@ -1,1 +1,28 @@
-<router-outlet></router-outlet>
+<div class="main-layout">
+  <div class="sidebar" [class.collapsed]="isCollapsed()">
+    <button nz-button nzType="primary" (click)="toggleCollapsed()" class="collapse-btn">
+      <nz-icon [nzType]="isCollapsed() ? 'menu-unfold' : 'menu-fold'" />
+    </button>
+    <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="isCollapsed()">
+      <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected">
+        <nz-icon nzType="dashboard" />
+        <span>Dashboard</span>
+      </li>
+      <li nz-menu-item routerLink="/todos" routerLinkActive="ant-menu-item-selected">
+        <nz-icon nzType="check-circle" />
+        <span>Todos</span>
+      </li>
+      <li nz-menu-item routerLink="/todo-form-demo" routerLinkActive="ant-menu-item-selected">
+        <nz-icon nzType="form" />
+        <span>Todo Form Demo</span>
+      </li>
+      <li nz-menu-item routerLink="/signal-inputs-demo" routerLinkActive="ant-menu-item-selected">
+        <nz-icon nzType="experiment" />
+        <span>Signal Inputs Demo</span>
+      </li>
+    </ul>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

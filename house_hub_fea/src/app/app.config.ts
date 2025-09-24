@@ -1,57 +1,33 @@
-import { provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideNzIcons } from 'ng-zorro-antd/icon';
-import { providePrimeNG } from 'primeng/config';
-import { TodoStore } from './data';
 
 import { routes } from './app.routes';
-import Aura from '@primeng/themes/aura';
+import { fr_FR, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import fr from '@angular/common/locales/fr';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient } from '@angular/common/http';
+import { TodoStore } from './data';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { provideNzConfig } from 'ng-zorro-antd/core/config';
 
-// Import ng-zorro-antd icons
-import {
-  BellOutline,
-  CalendarOutline,
-  CheckCircleOutline,
-  CheckOutline,
-  ClockCircleOutline,
-  HomeOutline,
-  LogoutOutline,
-  MenuOutline,
-  ScheduleOutline,
-  SettingOutline,
-  TeamOutline,
-  UnorderedListOutline,
-  UserOutline,
-} from '@ant-design/icons-angular/icons';
+registerLocaleData(fr);
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideAnimationsAsync(),
+    provideNzI18n(fr_FR),
     provideHttpClient(),
-    provideAnimations(), // Required for animations
-    providePrimeNG({
-      theme: {
-        preset: Aura,
-      },
-    }),
-    provideNzIcons([
-      MenuOutline,
-      BellOutline,
-      UserOutline,
-      SettingOutline,
-      LogoutOutline,
-      HomeOutline,
-      CheckCircleOutline,
-      UnorderedListOutline,
-      CalendarOutline,
-      CheckOutline,
-      ClockCircleOutline,
-      TeamOutline,
-      ScheduleOutline,
-    ]),
+    importProvidersFrom(),
+    NzModalService,
     TodoStore,
   ],
 };
