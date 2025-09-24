@@ -1,37 +1,12 @@
-<!-- <nz-layout class="app-layout">
-  <nz-sider nzCollapsible nzWidth="200px" nzTheme="dark">
-    <div class="logo"></div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="false">
-      <li nz-menu-item nzMatchRouter>
-        <span nz-icon nzType="setting"></span>
-        <span><a routerLink="/dashboard">Dashboard</a></span>
-      </li>
-      <li nz-menu-item nzMatchRouter>
-        <span nz-icon nzType="user"></span>
-        <span><a routerLink="/todos">Todos</a></span>
-      </li>
-    </ul>
-  </nz-sider>
-  <nz-layout>
-    <nz-header class="header">
-      <h1>House Hub</h1>
-    </nz-header>
-    <nz-content class="content">
-      <router-outlet></router-outlet>
-    </nz-content>
-  </nz-layout>
-</nz-layout> -->
-
 <div class="main-layout">
   <div class="sidebar-menu">
     <ul>
       <li>
-        <a routerLink="/dashboard">
-          <span nz-icon nzType="up-circle" nzTheme="outline"></span>
-          Dashboard</a
-        >
+        <nz-icon nzType="menu" nzTheme="outline" />
       </li>
+      <li><a routerLink="/dashboard">Dashboard</a></li>
       <li><a routerLink="/todos">Todos</a></li>
+      <li><a routerLink="/primeng-test">PrimeNG Test</a></li>
     </ul>
   </div>
   <div class="module-container">
