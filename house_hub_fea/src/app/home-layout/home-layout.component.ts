@@ -1,7 +1,7 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 @Component({
@@ -9,7 +9,6 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   imports: [
     RouterOutlet,
     RouterLink,
-    RouterLinkActive,
     NzLayoutModule,
     NzIconModule,
     NzMenuModule,

@@ -70,7 +70,7 @@ services:
       - ./house_hub_fea/tsconfig.json:/app/tsconfig.json:cached
       - ./house_hub_fea/tsconfig.app.json:/app/tsconfig.app.json:cached
       - ./house_hub_fea/tsconfig.spec.json:/app/tsconfig.spec.json:cached
-      - /app/node_modules # Preserve node_modules in container
+      - ./house_hub_fea/node_modules:/app/node_modules:cached # Mount node_modules from host
       - frontend_dist:/app/dist # Build output persistence
     depends_on:
       - backend
