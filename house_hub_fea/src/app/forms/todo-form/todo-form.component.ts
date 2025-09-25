@@ -148,10 +148,12 @@ export class TodoFormComponent {
     if (this.form.valid && this.todoEntity()) {
       const formValue = this.form.value;
       // Update existing todo
-      this.todoStore.updateTodo(this.todoEntity()!.Id, {
-        ...this.todoEntity(),
-        ...formValue,
-        UpdatedAt: new Date().toISOString(),
+      this.todoStore.updateTodo({
+        id: this.todoEntity()!.Id,
+        updates: {
+          ...formValue,
+          UpdatedAt: new Date().toISOString(),
+        },
       });
       this.isEditMode.set(false);
     }
@@ -159,25 +161,13 @@ export class TodoFormComponent {
   onCreate(): void {
     if (this.form.valid) {
       const formValue = this.form.value;
-      const currentMode = this.modalMode();
 
-      if (currentMode === ModalState.edit && this.todoEntity()) {
-        // Update existing todo
-        this.todoStore.updateTodo(this.todoEntity()!.Id, {
-          ...this.todoEntity(),
-          ...formValue,
-          UpdatedAt: new Date().toISOString(),
-        });
-      } else if (currentMode === ModalState.create) {
-        // Create new todo
-        this.todoStore.addTodo({
-          Id: this.todoId() || 'todo-' + Date.now(),
-          ...formValue,
-          IsCompleted: false,
-          CreatedAt: new Date().toISOString(),
-          UpdatedAt: new Date().toISOString(),
-        });
-      }
+      this.todoStore.addTodo({
+        ...formValue,
+        IsCompleted: false,
+        CreatedAt: new Date().toISOString(),
+        UpdatedAt: new Date().toISOString(),
+      });
     }
   }
 }

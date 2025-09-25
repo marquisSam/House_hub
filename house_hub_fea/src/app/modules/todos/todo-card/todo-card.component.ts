@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, effect } from '@angular/core';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -31,6 +31,12 @@ export class TodoCardComponent {
   toggleComplete = output<string>();
   deleteTodo = output<string>();
 
+  constructor() {
+    // Debug effect to track todo changes
+    effect(() => {
+      console.log('TodoCard: Todo changed:', this.todo());
+    });
+  }
   onEdit() {
     this.editTodo.emit(this.todo().Id);
   }

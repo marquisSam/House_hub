@@ -66,15 +66,25 @@ namespace HouseHub.Services
 
         public async Task<Todo> UpdateAsync(Guid id, UpdateTodoRequest request)
         {
+            _logger.LogInformation($"UpdateAsync called with id: {id} and request: {System.Text.Json.JsonSerializer.Serialize(request)}");
+            
             try
             {
                 var todo = await _context.Todos.FindAsync(id);
                 if (todo == null)
                 {
+                    _logger.LogWarning($"Todo with id {id} not found in database");
                     throw new Exception("Todo not found");
                 }
 
+                _logger.LogInformation($"Found existing todo: {System.Text.Json.JsonSerializer.Serialize(todo)}");
+                
+                // Log before mapping
+                _logger.LogInformation("Applying AutoMapper mapping...");
                 _mapper.Map(request, todo);
+                
+                _logger.LogInformation($"Todo after mapping: {System.Text.Json.JsonSerializer.Serialize(todo)}");
+                
                 todo.UpdatedAt = DateTime.UtcNow;
 
                 // Handle completion timestamp
@@ -83,14 +93,19 @@ namespace HouseHub.Services
                     if (request.IsCompleted.Value && todo.CompletedAt == null)
                     {
                         todo.CompletedAt = DateTime.UtcNow;
+                        _logger.LogInformation($"Set CompletedAt to {todo.CompletedAt}");
                     }
                     else if (!request.IsCompleted.Value)
                     {
                         todo.CompletedAt = null;
+                        _logger.LogInformation("Cleared CompletedAt");
                     }
                 }
 
+                _logger.LogInformation("Saving changes to database...");
                 await _context.SaveChangesAsync();
+                
+                _logger.LogInformation($"Successfully updated todo: {System.Text.Json.JsonSerializer.Serialize(todo)}");
                 return todo;
             }
             catch (DbUpdateException ex)
@@ -98,11 +113,15 @@ namespace HouseHub.Services
                 _logger.LogError(ex, "Task failed successfully: updating todo.");
                 throw new Exception($"Task failed successfully: {ex.Message}");
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpected error in UpdateAsync for id {id}");
+                throw;
+            }
         }
 
         public async Task<Todo> DeleteAsync(Guid id)
         {
-            _logger.LogInformation($"Attempting to delete todo with id: {id}");
             Console.WriteLine($"Attempting to delete todo with id: {id}");
             var todo = await _context.Todos.FindAsync(id);
             if (todo == null)

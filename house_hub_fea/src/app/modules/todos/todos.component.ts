@@ -41,7 +41,6 @@ export class TodosComponent implements OnInit {
   constructor() {}
   openCreateModal() {
     // Logic to open a modal for creating a new todo
-    console.log('Open create todo modal');
     this.modal.create({
       nzTitle: 'Créer une tâche',
       nzContent: TodoFormComponent,
@@ -56,7 +55,6 @@ export class TodosComponent implements OnInit {
 
   openEditModal(todoId: string) {
     // Logic to open a modal for editing an existing todo
-    console.log('Open edit todo modal for ID:', todoId);
     this.modal.create({
       nzTitle: 'Modifier la tâche',
       nzContent: TodoFormComponent,
@@ -83,10 +81,13 @@ export class TodosComponent implements OnInit {
   toggleComplete(todoId: string): void {
     const todo = this.store.todoEntityMap()[todoId];
     if (todo) {
-      this.store.updateTodo(todoId, {
-        IsCompleted: !todo.IsCompleted,
-        CompletedAt: !todo.IsCompleted ? new Date().toISOString() : null,
-        UpdatedAt: new Date().toISOString(),
+      this.store.updateTodo({
+        id: todoId,
+        updates: {
+          IsCompleted: !todo.IsCompleted,
+          CompletedAt: !todo.IsCompleted ? new Date().toISOString() : null,
+          UpdatedAt: new Date().toISOString(),
+        },
       });
     }
   }

@@ -1,0 +1,37 @@
+### Test Todo PATCH endpoint
+
+# First, get all todos to find a valid ID
+GET http://localhost:5001/odata/Todos
+
+###
+
+# Test PATCH with a sample todo ID (replace with actual ID from GET response)
+PATCH http://localhost:5001/odata/Todos(12345678-1234-1234-1234-123456789012)
+Content-Type: application/json
+
+{
+  "Title": "Updated Title via PATCH",
+  "IsCompleted": true
+}
+
+###
+
+# Test with different todo ID format
+PATCH http://localhost:5001/odata/Todos(guid'12345678-1234-1234-1234-123456789012')
+Content-Type: application/json
+
+{
+  "Title": "Updated Title via PATCH with guid prefix",
+  "IsCompleted": true
+}
+
+###
+
+# Test direct service endpoint (if you have it)
+PATCH http://localhost:5001/api/todos/12345678-1234-1234-1234-123456789012
+Content-Type: application/json
+
+{
+  "Title": "Updated Title via API endpoint",
+  "IsCompleted": true
+}
