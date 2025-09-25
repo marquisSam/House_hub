@@ -1,3 +1,4 @@
+import { ButtonConfig } from 'ng-zorro-antd/core/config';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -6,10 +7,22 @@ import { TodoFormComponent } from '../../forms/todo-form/todo-form.component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import {
+  ActionBtnBarComponent,
+  familyHubButtonConfig,
+} from '../../components/action-btn-bar/action-btn-bar.component';
+import { TodoCardComponent } from './todo-card/todo-card.component';
 @Component({
   selector: 'app-todos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzButtonModule, NzIconModule, NzModalModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NzButtonModule,
+    NzIconModule,
+    NzModalModule,
+    TodoCardComponent,
+  ],
   templateUrl: './todos.component.html',
   styleUrl: './todos.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,7 +43,7 @@ export class TodosComponent implements OnInit {
     // Logic to open a modal for creating a new todo
     console.log('Open create todo modal');
     this.modal.create({
-      nzTitle: 'Create Todo',
+      nzTitle: 'Créer une tâche',
       nzContent: TodoFormComponent,
       nzData: {
         todoId: 'new-todo-' + Date.now(), // Generate a unique ID for new todo
@@ -44,21 +57,15 @@ export class TodosComponent implements OnInit {
   openEditModal(todoId: string) {
     // Logic to open a modal for editing an existing todo
     console.log('Open edit todo modal for ID:', todoId);
-    const modalref = this.modal.create({
-      nzTitle: 'Edit Todo',
+    this.modal.create({
+      nzTitle: 'Modifier la tâche',
       nzContent: TodoFormComponent,
-
+      nzData: {
+        todoId: todoId,
+        isEditMode: true,
+      },
       nzFooter: null,
       nzWidth: 600,
-    });
-    if (modalref.componentInstance) {
-      modalref.componentInstance.todoId.set(todoId);
-      console.log('Modal instance created', modalref.componentInstance);
-      // Note: This won't work directly with signal inputs because they're readonly
-      // We need to use nzData approach instead
-    }
-    modalref.afterClose.subscribe(() => {
-      this.loadTodos();
     });
   }
   ngOnInit(): void {
@@ -81,6 +88,16 @@ export class TodosComponent implements OnInit {
         CompletedAt: !todo.IsCompleted ? new Date().toISOString() : null,
         UpdatedAt: new Date().toISOString(),
       });
+    }
+  }
+
+  deleteTodo(todoId: string): void {
+    const todo = this.store.todoEntityMap()[todoId];
+    if (todo) {
+      // You might want to add a confirmation dialog here
+      if (confirm(`Êtes-vous sûr de vouloir supprimer la tâche "${todo.Title}" ?`)) {
+        this.store.removeTodo(todoId);
+      }
     }
   }
 }

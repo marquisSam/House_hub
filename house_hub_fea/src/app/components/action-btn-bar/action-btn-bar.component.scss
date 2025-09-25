@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+.actions-bar {
+  display: flex;
+  gap: 10px;
+  &.align-right {
+    justify-content: flex-end;
+  }
+}

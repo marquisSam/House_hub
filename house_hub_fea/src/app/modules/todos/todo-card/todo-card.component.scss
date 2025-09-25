@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.todo-card {
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &.completed {
+    opacity: 0.8;
+    background-color: #f6ffed;
+    border-color: #b7eb8f;
+
+    .todo-description {
+      text-decoration: line-through;
+      color: #8c8c8c;
+    }
+  }
+}
+
+.todo-description {
+  margin-bottom: 16px;
+  color: #595959;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 20px;
+}
+
+.todo-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.detail-icon {
+  color: #8c8c8c;
+  font-size: 14px;
+  width: 16px;
+
+  &.completed-icon {
+    color: #52c41a;
+  }
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #262626;
+  min-width: 70px;
+}
+
+.detail-value {
+  color: #595959;
+}
+
+.card-actions {
+  display: flex;
+  gap: 4px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+  }
+}
+
+// Priority colors enhancement
+::ng-deep nz-tag {
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .todo-card {
+    margin-bottom: 12px;
+  }
+
+  .detail-item {
+    font-size: 12px;
+  }
+
+  .detail-label {
+    min-width: 60px;
+  }
+}

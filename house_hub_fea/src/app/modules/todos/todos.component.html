@@ -1,63 +1,43 @@
-<div class="todo-container">
-  <div class="section-banner">
-    <div class="title-section">
-      <h1>Todo Management</h1>
-      <div class="actions">
-        <button
-          (click)="openCreateModal()"
-          nz-button
-          nzType="primary"
-          [nzSize]="'large'"
-          nzShape="circle"
-        >
-          <nz-icon nzType="download" />
-        </button>
-      </div>
-    </div>
-    <p>Manage your tasks efficiently with our Todo application.</p>
-  </div>
+<div class="section-banner content-padding">
+  <h1>Gestion des Tâches</h1>
+  <p>Gérez vos tâches efficacement avec notre application de gestion des tâches.</p>
+</div>
 
-  <!-- Error handling -->
-  @if (error()) {
+<div class="actions-bar content-padding">
+  <button
+    (click)="openCreateModal()"
+    nz-button
+    nzType="primary"
+    [nzSize]="'large'"
+    nzShape="circle"
+  >
+    <nz-icon nzType="plus" nzTheme="outline" />
+  </button>
+</div>
+
+@if (error()) {
+<section class="content-padding">
   <div class="error-message">
     <p>{{ error() }}</p>
-    <button (click)="clearError()">Dismiss</button>
+    <button (click)="clearError()">Ignorer</button>
   </div>
-  }
+</section>
+}
 
-  <h2>Current Todos ({{ todosCount() }})</h2>
+<section id="todo-grid " class="content-padding">
+  <h2>Tâches Actuelles ({{ todosCount() }})</h2>
   <div class="grid">
     @if (isLoading()) {
-    <div class="spinner-overlay">is ;Loading...</div>
+    <div class="spinner-overlay">Chargement...</div>
     } @for (todo of todos(); track todo.Id) {
-    <div class="todo-item">
-      <h3>{{ todo.Title }}</h3>
-      <p>{{ todo.Description }}</p>
-      <p><strong>Priority:</strong> {{ todo.Priority }}</p>
-      <p><strong>Category:</strong> {{ todo.Category }}</p>
-      <p><strong>Due Date:</strong> {{ todo.DueDate }}</p>
-      <p><strong>Status:</strong> {{ todo.IsCompleted ? 'Completed' : 'Pending' }}</p>
-
-      <div class="todo-actions">
-        <button nz-button nzType="default" nzSize="small" (click)="openEditModal(todo.Id)">
-          <nz-icon nzType="edit" />
-          Edit
-        </button>
-
-        <button
-          nz-button
-          nzType="primary"
-          nzSize="small"
-          [disabled]="todo.IsCompleted"
-          (click)="toggleComplete(todo.Id)"
-        >
-          <nz-icon [nzType]="todo.IsCompleted ? 'check-circle' : 'clock-circle'" />
-          {{ todo.IsCompleted ? 'Completed' : 'Mark Complete' }}
-        </button>
-      </div>
-    </div>
+    <app-todo-card
+      [todo]="todo"
+      (editTodo)="openEditModal($event)"
+      (toggleComplete)="toggleComplete($event)"
+      (deleteTodo)="deleteTodo($event)"
+    ></app-todo-card>
     } @empty {
-    <p>No todos found.</p>
+    <p>Aucune tâche trouvée.</p>
     }
   </div>
-</div>
+</section>

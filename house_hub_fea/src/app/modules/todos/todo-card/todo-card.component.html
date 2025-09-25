@@ -1,0 +1,108 @@
+<nz-card
+  class="todo-card"
+  [nzTitle]="todo().Title"
+  [nzExtra]="actionsTemplate"
+  [class.completed]="todo().IsCompleted"
+>
+  <!-- Todo Description -->
+  <p class="todo-description">
+    {{ todo().Description || 'Aucune description' }}
+  </p>
+
+  <!-- Todo Details -->
+  <div class="todo-details">
+    <!-- Priority -->
+    <div class="detail-item">
+      <nz-icon nzType="flag" class="detail-icon"></nz-icon>
+      <span class="detail-label">Priorité:</span>
+      <nz-tag [nzColor]="getPriorityColor(todo().Priority)">
+        {{ getPriorityText(todo().Priority) }}
+      </nz-tag>
+    </div>
+
+    <!-- Category -->
+    <div class="detail-item" *ngIf="todo().Category">
+      <nz-icon nzType="folder" class="detail-icon"></nz-icon>
+      <span class="detail-label">Catégorie:</span>
+      <nz-tag nzColor="purple">{{ todo().Category }}</nz-tag>
+    </div>
+
+    <!-- Due Date -->
+    <div class="detail-item" *ngIf="todo().DueDate">
+      <nz-icon nzType="calendar" class="detail-icon"></nz-icon>
+      <span class="detail-label">Échéance:</span>
+      <span class="detail-value">{{ formatDate(todo().DueDate) }}</span>
+    </div>
+
+    <!-- Status -->
+    <div class="detail-item">
+      <nz-icon
+        [nzType]="todo().IsCompleted ? 'check-circle' : 'clock-circle'"
+        class="detail-icon"
+        [class.completed-icon]="todo().IsCompleted"
+      ></nz-icon>
+      <span class="detail-label">Statut:</span>
+      <nz-tag [nzColor]="todo().IsCompleted ? 'green' : 'orange'">
+        {{ todo().IsCompleted ? 'Terminée' : 'En cours' }}
+      </nz-tag>
+    </div>
+
+    <!-- Created Date -->
+    <div class="detail-item">
+      <nz-icon nzType="plus-circle" class="detail-icon"></nz-icon>
+      <span class="detail-label">Créée le:</span>
+      <span class="detail-value">{{ formatDate(todo().CreatedAt) }}</span>
+    </div>
+
+    <!-- Completed Date (if completed) -->
+    <div class="detail-item" *ngIf="todo().IsCompleted && todo().CompletedAt">
+      <nz-icon nzType="check-circle" class="detail-icon completed-icon"></nz-icon>
+      <span class="detail-label">Terminée le:</span>
+      <span class="detail-value">{{ formatDate(todo().CompletedAt) }}</span>
+    </div>
+  </div>
+</nz-card>
+
+<!-- Action Buttons Template -->
+<ng-template #actionsTemplate>
+  <div class="card-actions">
+    <!-- Edit Button -->
+    <button
+      nz-button
+      nzType="text"
+      nzSize="small"
+      (click)="onEdit()"
+      nz-tooltip
+      nzTooltipTitle="Modifier la tâche"
+    >
+      <nz-icon nzType="edit"></nz-icon>
+    </button>
+
+    <!-- Toggle Complete Button -->
+    <button
+      nz-button
+      nzType="text"
+      nzSize="small"
+      (click)="onToggleComplete()"
+      nz-tooltip
+      [nzTooltipTitle]="
+        todo().IsCompleted ? 'Marquer comme non terminée' : 'Marquer comme terminée'
+      "
+    >
+      <nz-icon [nzType]="todo().IsCompleted ? 'undo' : 'check'"></nz-icon>
+    </button>
+
+    <!-- Delete Button -->
+    <button
+      nz-button
+      nzType="text"
+      nzSize="small"
+      nzDanger
+      (click)="onDelete()"
+      nz-tooltip
+      nzTooltipTitle="Supprimer la tâche"
+    >
+      <nz-icon nzType="delete"></nz-icon>
+    </button>
+  </div>
+</ng-template>
