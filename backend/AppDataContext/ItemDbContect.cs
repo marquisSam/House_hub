@@ -26,6 +26,9 @@ namespace HouseHub.AppDataContext
         // DbSet property to represent the Event table
         public DbSet<Event> Events { get; set; }
 
+        // DbSet property to represent the User table
+        public DbSet<User> Users { get; set; }
+
 
          // Configuring the database provider and connection string
 
@@ -45,6 +48,16 @@ namespace HouseHub.AppDataContext
             modelBuilder.Entity<Event>()
                 .ToTable("EventsAPI")
                 .HasKey(x => x.Id);
+
+            // Configuring the model for the User entity
+            modelBuilder.Entity<User>()
+                .ToTable("UsersAPI")
+                .HasKey(x => x.Id);
+
+            // Ensure email uniqueness
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
      }
 }

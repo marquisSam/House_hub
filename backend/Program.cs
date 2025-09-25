@@ -25,6 +25,7 @@ static void ConfigureServices(IServiceCollection services, WebApplicationBuilder
     var modelBuilder = new ODataConventionModelBuilder();
     modelBuilder.EntitySet<Todo>("Todos");
     modelBuilder.EntitySet<Event>("Events");
+    modelBuilder.EntitySet<User>("Users");
     var edmModel = modelBuilder.GetEdmModel();
 
     services.AddControllers()
@@ -55,6 +56,7 @@ static void ConfigureServices(IServiceCollection services, WebApplicationBuilder
         options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
     
     services.AddScoped<ITodoServices, TodoServices>();
+    services.AddScoped<IUserServices, UserServices>();
 
     services.AddCors(options =>
     {

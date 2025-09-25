@@ -1,0 +1,63 @@
+### Get all users
+GET https://localhost:7115/odata/Users
+Accept: application/json
+
+###
+
+### Get user by ID (replace with actual GUID)
+GET https://localhost:7115/odata/Users(00000000-0000-0000-0000-000000000000)
+Accept: application/json
+
+###
+
+### Get user by email
+GET https://localhost:7115/odata/Users/GetByEmail?email=john.doe@example.com
+Accept: application/json
+
+###
+
+### Create a new user
+POST https://localhost:7115/odata/Users
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phoneNumber": "+1234567890",
+  "dateOfBirth": "1990-05-15T00:00:00Z",
+  "gender": "Male",
+  "address": "123 Main Street",
+  "city": "New York",
+  "postalCode": "10001",
+  "country": "United States"
+}
+
+###
+
+### Update user (replace GUID with actual ID)
+PUT https://localhost:7115/odata/Users(00000000-0000-0000-0000-000000000000)
+Content-Type: application/json
+
+{
+  "firstName": "John Updated",
+  "phoneNumber": "+1234567899",
+  "city": "Los Angeles"
+}
+
+###
+
+### Delete user (replace GUID with actual ID)
+DELETE https://localhost:7115/odata/Users(00000000-0000-0000-0000-000000000000)
+
+###
+
+### Get users with OData query options
+GET https://localhost:7115/odata/Users?$filter=isActive eq true&$orderby=firstName&$top=10
+Accept: application/json
+
+###
+
+### Get users by city
+GET https://localhost:7115/odata/Users?$filter=city eq 'New York'
+Accept: application/json
