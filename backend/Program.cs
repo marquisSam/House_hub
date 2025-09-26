@@ -5,6 +5,7 @@ using HouseHub.Models;
 using HouseHub.Services;
 using HouseHub.Interface;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 
@@ -49,11 +50,11 @@ static void ConfigureServices(IServiceCollection services, WebApplicationBuilder
 
     services.Configure<DbSettings>(builder.Configuration.GetSection("DbSettings"));
     
-    // Add ItemDbContext to the service collection with SQL Server as the database provider
+    // Add ItemDbContext to the service collection with PostgreSQL as the database provider
     // The connection string is retrieved from the configuration
     // by not making it a singleton, it will be created each time the context is used for each request
     services.AddDbContext<ItemDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
+        options.UseNpgsql(builder.Configuration.GetSection("DbSettings")["ConnectionString"]));
     
     services.AddScoped<ITodoServices, TodoServices>();
     services.AddScoped<IUserServices, UserServices>();

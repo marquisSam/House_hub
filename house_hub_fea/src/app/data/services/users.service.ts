@@ -14,7 +14,7 @@ import {
 })
 export class UsersService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:5001'; // Using HTTP to avoid SSL certificate issues
+  private readonly baseUrl = 'http://localhost:5001'; // Updated to match Docker backend port
 
   constructor() {}
 

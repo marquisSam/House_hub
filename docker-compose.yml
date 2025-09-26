@@ -1,26 +1,23 @@
 version: "3.8"
 
 services:
-  # SQL Server Database
+  # PostgreSQL Database
   database:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:16-alpine
     container_name: househub-database
     environment:
-      ACCEPT_EULA: Y
-      SA_PASSWORD: YourStrong@Passw0rd
-      MSSQL_PID: Developer
+      POSTGRES_DB: HouseHubApiDb
+      POSTGRES_USER: househub_user
+      POSTGRES_PASSWORD: househub_password
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "1433:1433"
+      - "5432:5432"
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - househub-network
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U househub_user -d HouseHubApiDb"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -34,7 +31,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - DbSettings__ConnectionString=Server=database,1433;Database=HouseHubApiDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
+      - DbSettings__ConnectionString=Host=database;Port=5432;Database=HouseHubApiDb;Username=househub_user;Password=househub_password;
       - CORS__AllowedOrigins=http://localhost:4200,http://frontend:80
     ports:
       - "5000:8080"
@@ -98,7 +95,7 @@ services:
       - production
 
 volumes:
-  sqlserver_data: # Database persistence
+  postgres_data: # PostgreSQL database persistence
   uploads_temp: # Temporary file processing
   backend_config: # Backend configuration files
   frontend_dist: # Frontend build output

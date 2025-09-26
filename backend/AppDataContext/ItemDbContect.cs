@@ -12,8 +12,14 @@ namespace HouseHub.AppDataContext
         // DbSettings field to store the connection string
          private readonly DbSettings _dbsettings;
 
-            // Constructor to inject the DbSettings model
+         // Constructor to inject the DbSettings model
          public ItemDbContext(IOptions<DbSettings> dbSettings)
+         {
+             _dbsettings = dbSettings.Value;
+         }
+
+         // Constructor for Entity Framework with DbContextOptions
+         public ItemDbContext(DbContextOptions<ItemDbContext> options, IOptions<DbSettings> dbSettings) : base(options)
          {
              _dbsettings = dbSettings.Value;
          }
@@ -34,7 +40,7 @@ namespace HouseHub.AppDataContext
 
          protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
          {
-             optionsBuilder.UseSqlServer(_dbsettings.ConnectionString);
+             optionsBuilder.UseNpgsql(_dbsettings.ConnectionString);
          }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
