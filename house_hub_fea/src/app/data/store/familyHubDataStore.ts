@@ -12,12 +12,18 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, delay, EMPTY, Observable, pipe, switchMap, tap } from 'rxjs';
 import { Todo } from '../models/todosModel';
 import { TodoService } from '../services/todo.service';
+import { User, CreateUserRequest, UpdateUserRequest } from '../models/usersModel';
+import { UsersService } from '../services/users.service';
 
 interface TodoState {
   todoIsLoading: boolean;
   todoCreationPending: boolean;
   todoUpdatingPending: boolean;
   todoDeletionPending: boolean;
+  userIsLoading: boolean;
+  userCreationPending: boolean;
+  userUpdatingPending: boolean;
+  userDeletionPending: boolean;
   error: string | null;
 }
 
@@ -26,22 +32,37 @@ interface TodoUpdate {
   updates: Partial<Todo>;
 }
 
+interface UserUpdate {
+  id: string;
+  updates: UpdateUserRequest;
+}
+
 const todoConfig = entityConfig({
   entity: type<Todo>(),
   collection: 'todo',
   selectId: (todo) => todo.Id,
 });
+const userConfig = entityConfig({
+  entity: type<User>(),
+  collection: 'user',
+  selectId: (user) => user.Id,
+});
 
-const TodoStore = signalStore(
+const FamilyHubDataStore = signalStore(
   withEntities(todoConfig),
+  withEntities(userConfig),
   withState<TodoState>({
     todoIsLoading: false,
     todoCreationPending: false,
     todoUpdatingPending: false,
     todoDeletionPending: false,
+    userIsLoading: false,
+    userCreationPending: false,
+    userUpdatingPending: false,
+    userDeletionPending: false,
     error: null,
   }),
-  withMethods((store, todoService = inject(TodoService)) => {
+  withMethods((store, todoService = inject(TodoService), usersService = inject(UsersService)) => {
     // Helper function to handle common error and loading patterns
     const createRxMethod = <T>(
       loadingKey: keyof TodoState,
@@ -63,6 +84,7 @@ const TodoStore = signalStore(
     };
 
     return {
+      // Todo methods
       loadTodos: createRxMethod<void>('todoIsLoading', () =>
         todoService.getTodos().pipe(
           tap(({ value }: { value: Todo[] }) => {
@@ -96,6 +118,56 @@ const TodoStore = signalStore(
         )
       ),
 
+      // User methods
+      loadUsers: createRxMethod<void>('userIsLoading', () =>
+        usersService.getUsers().pipe(
+          tap(({ value }: { value: User[] }) => {
+            patchState(store, setEntities(value, userConfig));
+          })
+        )
+      ),
+
+      addUser: createRxMethod<CreateUserRequest>('userCreationPending', (userData) =>
+        usersService.createUser(userData).pipe(
+          tap((newUser: User) => {
+            patchState(store, addEntities([newUser], userConfig));
+          })
+        )
+      ),
+
+      removeUser: createRxMethod<string>('userDeletionPending', (userId) =>
+        usersService.deleteUser(userId).pipe(
+          tap(() => {
+            patchState(store, removeEntity(userId, userConfig));
+          })
+        )
+      ),
+
+      updateUser: createRxMethod<UserUpdate>('userUpdatingPending', ({ id, updates }) =>
+        usersService.updateUser(id, updates).pipe(
+          tap((updatedUser: User) => {
+            patchState(store, updateEntity({ id, changes: updatedUser }, userConfig));
+          })
+        )
+      ),
+
+      // Search and filter methods
+      searchUsersByName: createRxMethod<string>('userIsLoading', (searchTerm) =>
+        usersService.searchUsersByName(searchTerm).pipe(
+          tap(({ value }: { value: User[] }) => {
+            patchState(store, setEntities(value, userConfig));
+          })
+        )
+      ),
+
+      loadActiveUsers: createRxMethod<void>('userIsLoading', () =>
+        usersService.getActiveUsers().pipe(
+          tap(({ value }: { value: User[] }) => {
+            patchState(store, setEntities(value, userConfig));
+          })
+        )
+      ),
+
       clearError(): void {
         patchState(store, { error: null });
       },
@@ -104,22 +176,53 @@ const TodoStore = signalStore(
   withComputed(
     ({
       todoEntities,
+      userEntities,
       error,
       todoIsLoading,
       todoCreationPending,
       todoUpdatingPending,
       todoDeletionPending,
+      userIsLoading,
+      userCreationPending,
+      userUpdatingPending,
+      userDeletionPending,
     }) => ({
+      // Todo computed properties
       todosCount: computed(() => todoEntities().length),
+      completedTodos: computed(() => todoEntities().filter((todo: Todo) => todo.IsCompleted)),
+      pendingTodos: computed(() => todoEntities().filter((todo: Todo) => !todo.IsCompleted)),
+
+      // User computed properties
+      usersCount: computed(() => userEntities().length),
+      activeUsers: computed(() => userEntities().filter((user: User) => user.IsActive)),
+      inactiveUsers: computed(() => userEntities().filter((user: User) => !user.IsActive)),
+      usersWithEmails: computed(() =>
+        userEntities().filter((user: User) => user.Email && user.Email.trim() !== '')
+      ),
+
+      // General computed properties
       hasError: computed(() => !!error()),
-      isAnyOperationPending: computed(
+      isAnyTodoOperationPending: computed(
         () =>
           todoIsLoading() || todoCreationPending() || todoUpdatingPending() || todoDeletionPending()
       ),
-      completedTodos: computed(() => todoEntities().filter((todo: Todo) => todo.IsCompleted)),
-      pendingTodos: computed(() => todoEntities().filter((todo: Todo) => !todo.IsCompleted)),
+      isAnyUserOperationPending: computed(
+        () =>
+          userIsLoading() || userCreationPending() || userUpdatingPending() || userDeletionPending()
+      ),
+      isAnyOperationPending: computed(
+        () =>
+          todoIsLoading() ||
+          todoCreationPending() ||
+          todoUpdatingPending() ||
+          todoDeletionPending() ||
+          userIsLoading() ||
+          userCreationPending() ||
+          userUpdatingPending() ||
+          userDeletionPending()
+      ),
     })
   )
 );
 
-export { TodoStore };
+export { FamilyHubDataStore };

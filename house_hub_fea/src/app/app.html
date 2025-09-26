@@ -4,13 +4,17 @@
       <nz-icon [nzType]="isCollapsed() ? 'menu-unfold' : 'menu-fold'" />
     </button>
     <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="isCollapsed()">
+      <li nz-menu-item routerLink="/users" routerLinkActive="ant-menu-item-selected">
+        <nz-icon nzType="team" />
+        <span>Utilisateurs</span>
+      </li>
       <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected">
         <nz-icon nzType="dashboard" />
-        <span>Dashboard</span>
+        <span>Tableau de bord</span>
       </li>
       <li nz-menu-item routerLink="/todos" routerLinkActive="ant-menu-item-selected">
         <nz-icon nzType="check-circle" />
-        <span>Todos</span>
+        <span>Tâches</span>
       </li>
     </ul>
   </div>

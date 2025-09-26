@@ -13,7 +13,7 @@ import { NzSizeLDSType } from 'ng-zorro-antd/core/types';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NZ_MODAL_DATA } from 'ng-zorro-antd/modal';
-import { Todo, TodoStore } from '../../data';
+import { Todo, FamilyHubDataStore } from '../../data';
 import {
   ActionBtnBarComponent,
   familyHubButtonConfig,
@@ -40,7 +40,7 @@ export enum ModalState {
 })
 export class TodoFormComponent {
   private fb = inject(FormBuilder);
-  todoStore = inject(TodoStore);
+  FamilyHubDataStore = inject(FamilyHubDataStore);
   private modalData = inject(NZ_MODAL_DATA, { optional: true });
 
   constructor() {
@@ -68,7 +68,7 @@ export class TodoFormComponent {
   todoId = signal<string>('');
   isEditMode = signal<boolean>(false);
   todoEntity = computed<Todo | null>(() => {
-    const todoEntityMap = this.todoStore.todoEntityMap();
+    const todoEntityMap = this.FamilyHubDataStore.todoEntityMap();
     return todoEntityMap[this.todoId()] || null;
   });
 
@@ -148,7 +148,7 @@ export class TodoFormComponent {
     if (this.form.valid && this.todoEntity()) {
       const formValue = this.form.value;
       // Update existing todo
-      this.todoStore.updateTodo({
+      this.FamilyHubDataStore.updateTodo({
         id: this.todoEntity()!.Id,
         updates: {
           ...formValue,
@@ -162,7 +162,7 @@ export class TodoFormComponent {
     if (this.form.valid) {
       const formValue = this.form.value;
 
-      this.todoStore.addTodo({
+      this.FamilyHubDataStore.addTodo({
         ...formValue,
         IsCompleted: false,
         CreatedAt: new Date().toISOString(),

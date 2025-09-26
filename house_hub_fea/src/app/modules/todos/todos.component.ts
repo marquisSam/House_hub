@@ -2,7 +2,7 @@ import { ButtonConfig } from 'ng-zorro-antd/core/config';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { TodoStore } from '../../data';
+import { FamilyHubDataStore } from '../../data';
 import { TodoFormComponent } from '../../forms/todo-form/todo-form.component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
@@ -29,7 +29,7 @@ import { TodoCardComponent } from './todo-card/todo-card.component';
 })
 export class TodosComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private store = inject(TodoStore);
+  private store = inject(FamilyHubDataStore);
   private modal = inject(NzModalService);
 
   // Signals from the store

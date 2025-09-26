@@ -1,0 +1,228 @@
+.users-container {
+  padding: 24px;
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .users-title {
+    h2 {
+      margin: 0 0 8px 0;
+      color: #1890ff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      nz-icon {
+        font-size: 24px;
+      }
+    }
+
+    .users-subtitle {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+
+  .users-stats {
+    display: flex;
+    gap: 24px;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .stat-label {
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 4px;
+      }
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1890ff;
+      }
+    }
+  }
+}
+
+.users-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .search-section {
+    flex: 1;
+    min-width: 300px;
+
+    .search-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+
+      nz-input-group {
+        width: 250px;
+      }
+    }
+  }
+
+  .filter-section {
+    display: flex;
+    gap: 8px;
+  }
+
+  .create-section {
+    .quick-create-form {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+  }
+}
+
+.loading-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+
+  .loading-content {
+    width: 100%;
+    height: 100px;
+  }
+}
+
+.error-section {
+  margin-bottom: 16px;
+}
+
+.users-grid {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .users-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 16px;
+  }
+
+  .no-users {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+  }
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+  .users-actions {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-section {
+      min-width: auto;
+    }
+
+    .create-section .quick-create-form {
+      flex-wrap: wrap;
+      gap: 8px;
+
+      input {
+        flex: 1;
+        min-width: 150px !important;
+        margin-right: 0 !important;
+        margin-bottom: 8px;
+      }
+
+      button {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .users-grid .users-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .users-container {
+    padding: 16px;
+  }
+
+  .users-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+
+    .users-stats {
+      justify-content: center;
+    }
+  }
+
+  .users-actions {
+    .search-section .search-form {
+      flex-direction: column;
+      align-items: stretch;
+
+      nz-input-group {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    }
+
+    .filter-section {
+      justify-content: center;
+    }
+  }
+
+  .users-grid .users-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Animation for user cards
+.users-list {
+  app-user-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// Loading state styling
+nz-spin {
+  .ant-spin-dot {
+    color: #1890ff;
+  }
+}
+
+// Custom alert styling
+nz-alert {
+  margin-bottom: 16px;
+}

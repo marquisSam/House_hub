@@ -1,0 +1,138 @@
+<div class="users-container">
+  <!-- Header Section -->
+  <div class="users-header">
+    <div class="users-title">
+      <h2>
+        <nz-icon nzType="user" nzTheme="outline"></nz-icon>
+        User Management
+      </h2>
+      <p class="users-subtitle">Manage users, search, and view user details</p>
+    </div>
+
+    <div class="users-stats">
+      <div class="stat-item">
+        <span class="stat-label">Total Users:</span>
+        <span class="stat-value">{{ store.usersCount() }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Active:</span>
+        <span class="stat-value">{{ store.activeUsers().length }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">With Email:</span>
+        <span class="stat-value">{{ store.usersWithEmails().length }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="users-actions">
+    <!-- Search Section -->
+    <div class="search-section">
+      <form [formGroup]="searchForm" (ngSubmit)="searchUsers()" class="search-form">
+        <nz-input-group nzSuffixIcon="search">
+          <input
+            type="text"
+            nz-input
+            formControlName="searchTerm"
+            placeholder="Search users by name..."
+          />
+        </nz-input-group>
+        <button nz-button nzType="primary" type="submit">
+          <nz-icon nzType="search"></nz-icon>
+          Search
+        </button>
+        <button nz-button nzType="default" type="button" (click)="clearSearch()">
+          <nz-icon nzType="clear"></nz-icon>
+          Clear
+        </button>
+      </form>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="filter-section">
+      <button nz-button nzType="default" (click)="loadUsers()">
+        <nz-icon nzType="team"></nz-icon>
+        All Users
+      </button>
+      <button nz-button nzType="default" (click)="loadActiveUsers()">
+        <nz-icon nzType="user-check"></nz-icon>
+        Active Only
+      </button>
+    </div>
+
+    <!-- Create User Section -->
+    <div class="create-section">
+      <form [formGroup]="quickCreateForm" (ngSubmit)="createUser()" class="quick-create-form">
+        <input
+          nz-input
+          formControlName="firstName"
+          placeholder="First Name *"
+          style="width: 120px; margin-right: 8px"
+        />
+        <input
+          nz-input
+          formControlName="lastName"
+          placeholder="Last Name"
+          style="width: 120px; margin-right: 8px"
+        />
+        <input
+          nz-input
+          formControlName="email"
+          placeholder="Email"
+          style="width: 150px; margin-right: 8px"
+        />
+        <button nz-button nzType="primary" type="submit">
+          <nz-icon nzType="plus"></nz-icon>
+          Add User
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-section" *ngIf="store.isAnyUserOperationPending()">
+    <nz-spin nzTip="Loading users...">
+      <div class="loading-content"></div>
+    </nz-spin>
+  </div>
+
+  <!-- Error Display -->
+  <div class="error-section" *ngIf="store.hasError()">
+    <nz-alert
+      nzType="error"
+      nzMessage="Error"
+      [nzDescription]="store.error()"
+      nzShowIcon
+      nzCloseable
+      (nzOnClose)="store.clearError()"
+    ></nz-alert>
+  </div>
+
+  <!-- Users Grid -->
+  <div class="users-grid" *ngIf="!store.isAnyUserOperationPending()">
+    <div class="users-list">
+      <ng-container *ngIf="store.userEntities().length > 0; else noUsers">
+        <app-user-card
+          *ngFor="let user of store.userEntities(); trackBy: trackByUserId"
+          [user]="user"
+          (userUpdate)="onUserUpdate($event)"
+          (userDelete)="onUserDelete($event.Id)"
+        ></app-user-card>
+      </ng-container>
+
+      <ng-template #noUsers>
+        <div class="no-users">
+          <nz-empty nzNotFoundImage="simple" nzNotFoundContent="No users found">
+            <span nz-empty-footer>
+              <button nz-button nzType="primary" (click)="loadUsers()">
+                <nz-icon nzType="reload"></nz-icon>
+                Reload Users
+              </button>
+            </span>
+          </nz-empty>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

@@ -12,7 +12,7 @@ import { registerLocaleData } from '@angular/common';
 import fr from '@angular/common/locales/fr';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
-import { TodoStore } from './data';
+import { FamilyHubDataStore } from './data';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { provideNzConfig } from 'ng-zorro-antd/core/config';
 
@@ -28,6 +28,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     importProvidersFrom(),
     NzModalService,
-    TodoStore,
+    FamilyHubDataStore,
   ],
 };

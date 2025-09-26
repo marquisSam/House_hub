@@ -5,4 +5,4 @@ export { TodoService } from './services/todo.service';
 export type { Todo } from './models/todosModel';
 
 // Store
-export { TodoStore } from './store/familyHubDataStore';
+export { FamilyHubDataStore } from './store/familyHubDataStore';
