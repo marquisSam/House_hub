@@ -1,5 +1,5 @@
 // Services
-export { TodoService } from './services/todo.service';
+export { TodoService } from './services/todo-http.service';
 
 // Models
 export type { Todo } from './models/todosModel';

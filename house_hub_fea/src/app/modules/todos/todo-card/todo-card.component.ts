@@ -31,12 +31,6 @@ export class TodoCardComponent {
   toggleComplete = output<string>();
   deleteTodo = output<string>();
 
-  constructor() {
-    // Debug effect to track todo changes
-    effect(() => {
-      console.log('TodoCard: Todo changed:', this.todo());
-    });
-  }
   onEdit() {
     this.editTodo.emit(this.todo().Id);
   }

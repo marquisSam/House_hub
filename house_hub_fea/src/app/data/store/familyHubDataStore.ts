@@ -11,11 +11,13 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, delay, EMPTY, Observable, pipe, switchMap, tap } from 'rxjs';
 import { Todo } from '../models/todosModel';
-import { TodoService } from '../services/todo.service';
+import { TodoService } from '../services/todo-http.service';
 import { User, CreateUserRequest, UpdateUserRequest } from '../models/usersModel';
-import { UsersService } from '../services/users.service';
+import { UsersService } from '../services/users-http.service';
 
 interface TodoState {
+  selectedUser: User | null;
+  appIsLoading: boolean;
   todoIsLoading: boolean;
   todoCreationPending: boolean;
   todoUpdatingPending: boolean;
@@ -52,6 +54,8 @@ const FamilyHubDataStore = signalStore(
   withEntities(todoConfig),
   withEntities(userConfig),
   withState<TodoState>({
+    selectedUser: null,
+    appIsLoading: true,
     todoIsLoading: false,
     todoCreationPending: false,
     todoUpdatingPending: false,
@@ -171,6 +175,92 @@ const FamilyHubDataStore = signalStore(
       clearError(): void {
         patchState(store, { error: null });
       },
+
+      setSelectedUser(user: User | null): void {
+        // Sauver en session
+        if (user) {
+          sessionStorage.setItem('selectedUser', JSON.stringify(user));
+        } else {
+          sessionStorage.removeItem('selectedUser');
+        }
+
+        patchState(store, { selectedUser: user });
+      },
+
+      // Méthode pour charger depuis la session
+      loadSelectedUserFromSession(): void {
+        try {
+          const stored = sessionStorage.getItem('selectedUser');
+          if (stored) {
+            const user = JSON.parse(stored) as User;
+            patchState(store, { selectedUser: user });
+          }
+        } catch (error) {
+          console.warn('Failed to load selected user from session:', error);
+          sessionStorage.removeItem('selectedUser');
+        }
+      },
+
+      setAppLoading(loading: boolean): void {
+        patchState(store, { appIsLoading: loading });
+      },
+
+      // Méthode d'initialisation pour l'app
+      async initializeApp(): Promise<void> {
+        // Démarrer le loading de l'app
+        patchState(store, { appIsLoading: true });
+
+        try {
+          // Charger les utilisateurs actifs et attendre la fin de l'opération
+          await new Promise<void>((resolve) => {
+            this.loadActiveUsers();
+
+            // Attendre que le loading soit terminé
+            const checkLoading = () => {
+              if (!store.userIsLoading()) {
+                resolve();
+              } else {
+                setTimeout(checkLoading, 100);
+              }
+            };
+
+            // Démarrer la vérification après un petit délai pour laisser le loading commencer
+            setTimeout(checkLoading, 100);
+          });
+
+          console.log('Active users loaded, checking session storage...');
+
+          const stored = sessionStorage.getItem('selectedUser');
+          if (stored) {
+            const sessionUser = JSON.parse(stored) as User;
+
+            // Maintenant que les utilisateurs actifs sont chargés, vérifier si l'utilisateur existe
+            const allUsers = store.userEntities();
+            const activeUsers = allUsers.filter((user: User) => user.IsActive);
+            const userExists = activeUsers.some((user: User) => user.Id === sessionUser.Id);
+
+            if (userExists) {
+              // L'utilisateur existe toujours dans les utilisateurs actifs
+              patchState(store, { selectedUser: sessionUser });
+              console.log('User loaded from session:', sessionUser.FirstName, sessionUser.LastName);
+            } else {
+              // L'utilisateur n'existe plus dans les utilisateurs actifs, le supprimer du sessionStorage
+              console.log('User from session no longer active, removing from sessionStorage');
+              sessionStorage.removeItem('selectedUser');
+              patchState(store, { selectedUser: null });
+            }
+          } else {
+            console.log('No user in session, active users loaded');
+          }
+        } catch (error) {
+          console.warn('Failed to initialize app from session:', error);
+          sessionStorage.removeItem('selectedUser');
+          patchState(store, { selectedUser: null });
+        } finally {
+          // Arrêter le loading de l'app à la fin
+          patchState(store, { appIsLoading: false });
+        }
+      },
     };
   }),
   withComputed(
@@ -178,6 +268,7 @@ const FamilyHubDataStore = signalStore(
       todoEntities,
       userEntities,
       error,
+      appIsLoading,
       todoIsLoading,
       todoCreationPending,
       todoUpdatingPending,

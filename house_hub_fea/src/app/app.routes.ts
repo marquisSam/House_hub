@@ -5,7 +5,7 @@ import { UsersComponent } from './modules/users/users.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'users', component: UsersComponent },
+  { path: 'users-management', component: UsersComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'todos', component: TodosComponent },
   { path: '**', redirectTo: '/dashboard' }, // Wildcard route for 404 page

@@ -4,6 +4,13 @@
   overflow: hidden;
 }
 
+nz-avatar {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 1001;
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;

@@ -31,9 +31,17 @@ namespace HouseHub.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while getting users");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+                _logger.LogError(ex, "Error occurred while getting users: {Message}", ex.Message);
+                _logger.LogError(ex, "Stack trace: {StackTrace}", ex.StackTrace);
+                throw; // Re-throw to see the full exception details
             }
+        }
+
+        // GET: api/Users/test - Simple test endpoint
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok(new { message = "Users controller is working", timestamp = DateTime.UtcNow });
         }
 
         // GET: odata/Users(guid)
