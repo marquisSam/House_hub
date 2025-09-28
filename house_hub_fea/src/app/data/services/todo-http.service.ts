@@ -39,15 +39,20 @@ export class TodoService {
       AssignedUserIds: todoData.AssignedUsers || [],
     };
 
-    return this.http.post<TodoBackendResponse>(`${this.baseUrl}/odata/Todos`, createRequest).pipe(
-      map((response: TodoBackendResponse) => {
-        // Map Users navigation property to AssignedUsers for frontend
-        return {
-          ...response,
-          AssignedUsers: response.Users ? response.Users.map((user: User) => user.Id) : [],
-        } as Todo;
-      })
-    );
+    return this.http
+      .post<TodoBackendResponse>(
+        `${this.baseUrl}/odata/Todos?$expand=Users($select=Id)`,
+        createRequest
+      )
+      .pipe(
+        map((response: TodoBackendResponse) => {
+          // Map Users navigation property to AssignedUsers for frontend
+          return {
+            ...response,
+            AssignedUsers: response.Users ? response.Users.map((user: User) => user.Id) : [],
+          } as Todo;
+        })
+      );
   }
 
   getTodos(): Observable<{ value: Todo[] }> {
@@ -66,7 +71,7 @@ export class TodoService {
   }
 
   updateTodo(id: string, todoData: Partial<Todo>): Observable<Todo> {
-    const url = `${this.baseUrl}/odata/Todos(${id})`;
+    const url = `${this.baseUrl}/odata/Todos(${id})?$expand=Users($select=Id)`;
 
     // Prepare update request with proper field mapping
     const updateRequest: Record<string, unknown> = {

@@ -53,6 +53,8 @@ namespace HouseHub.Controllers
         }
 
         // POST: odata/Todos
+        [EnableQuery]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateTodosRequest request)
         {
             if (!ModelState.IsValid)
@@ -63,6 +65,7 @@ namespace HouseHub.Controllers
             try
             {
                 var todo = await _todoServices.CreateAsync(request);
+                // Ensure Users navigation property is included in the response
                 return Created(todo);
             }
             catch (Exception ex)
@@ -112,6 +115,7 @@ namespace HouseHub.Controllers
 
         // PATCH: odata/Todos(guid) - Partial update
         [HttpPatch]
+        [EnableQuery]
         public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] UpdateTodoRequest request)
         {
             if (!ModelState.IsValid)
@@ -133,6 +137,7 @@ namespace HouseHub.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, "Update operation failed");
                 }
                 
+                // Users navigation property is already included from the service
                 return Ok(updatedTodo);
             }
             catch (Exception ex)

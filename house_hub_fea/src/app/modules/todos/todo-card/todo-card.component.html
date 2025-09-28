@@ -56,6 +56,23 @@
       <span class="detail-value">{{ formatDate(todo().CompletedAt) }}</span>
     </div>
   </div>
+
+  <!-- Assigned Users Avatars -->
+  <div class="assigned-users" *ngIf="assignedUsers().length > 0">
+    <div class="users-label">
+      <nz-icon nzType="user" class="detail-icon"></nz-icon>
+      <span>Assignée à:</span>
+    </div>
+    <div class="users-avatars">
+      <nz-avatar
+        *ngFor="let user of assignedUsers()"
+        [nzText]="getUserInitials(user)"
+        nzSize="small"
+        [nz-tooltip]="getUserFullName(user)"
+        class="user-avatar"
+      ></nz-avatar>
+    </div>
+  </div>
 </nz-card>
 
 <!-- Action Buttons Template -->

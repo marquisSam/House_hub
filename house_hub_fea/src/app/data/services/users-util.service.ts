@@ -6,12 +6,9 @@ import { User } from '../models/usersModel';
 })
 export class UsersUtilService {
   getUserInitials(user: User): string {
-    return (user.FirstName + ' ' + user.LastName)
-      .split(' ')
-      .map((name: string) => name.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    const firstInitial = user.FirstName?.charAt(0)?.toUpperCase() || '';
+    const lastInitial = user.LastName?.charAt(0)?.toUpperCase() || '';
+    return `${firstInitial}${lastInitial}`;
   }
 
   getAvatarColor(user: User): string {
@@ -30,5 +27,8 @@ export class UsersUtilService {
     ];
     const index = parseInt(user.Id, 36) % colors.length;
     return colors[index];
+  }
+  getUserFullName(user: User): string {
+    return `${user.FirstName} ${user.LastName || ''}`.trim();
   }
 }
