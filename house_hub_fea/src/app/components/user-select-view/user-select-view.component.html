@@ -1,41 +1,36 @@
 <div class="user-select-container">
   <div class="header">
     @if (isLoading()) {
-    <h2 nz-typography>Chargement des utilisateurs...</h2>
+      <h2 nz-typography>Chargement des utilisateurs...</h2>
     } @else {
-    <h2 nz-typography>Qui utilise l'application aujourd'hui?</h2>
+      <h2 nz-typography>Qui utilise l'application aujourd'hui?</h2>
     }
   </div>
 
   @if (!isLoading()) {
-  <div class="users-grid">
-    @for (user of users(); track user.Id) {
-    <nz-card
-      class="user-card"
-      (click)="onUserSelect(user)"
-      [class.active]="user.IsActive"
-      nzHoverable
-    >
-      <div class="user-content">
-        <nz-avatar
-          [nzText]="getUserInitials(user)"
-          [nzSize]="64"
-          [ngStyle]="{ 'background-color': getAvatarColor(user) }"
-        ></nz-avatar>
-        <div class="user-info">
-          <h3>{{ user.FirstName }} {{ user.LastName }}</h3>
-          <p *ngIf="user.Email" class="user-email">{{ user.Email }}</p>
-          <span class="user-status" [class.inactive]="!user.IsActive">
-            {{ user.IsActive ? 'Actif' : 'Inactif' }}
-          </span>
-        </div>
-      </div>
-    </nz-card>
-    }
-  </div>
+    <div class="users-grid">
+      @for (user of users(); track user.Id) {
+        <nz-card class="user-card" (click)="onUserSelect(user)" [class.active]="user.IsActive" nzHoverable>
+          <div class="user-content">
+            <nz-avatar
+              [nzText]="getUserInitials(user)"
+              [nzSize]="64"
+              [ngStyle]="{ 'background-color': getAvatarColor(user) }"
+            ></nz-avatar>
+            <div class="user-info">
+              <h3>{{ user.FirstName }} {{ user.LastName }}</h3>
+              <p *ngIf="user.Email" class="user-email">{{ user.Email }}</p>
+              <span class="user-status" [class.inactive]="!user.IsActive">
+                {{ user.IsActive ? 'Actif' : 'Inactif' }}
+              </span>
+            </div>
+          </div>
+        </nz-card>
+      }
+    </div>
   } @else {
-  <div class="loading-container">
-    <nz-spin nzSize="large"></nz-spin>
-  </div>
+    <div class="loading-container">
+      <nz-spin nzSize="large"></nz-spin>
+    </div>
   }
 </div>

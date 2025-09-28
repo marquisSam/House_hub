@@ -31,12 +31,7 @@
     <div class="search-section">
       <form [formGroup]="searchForm" (ngSubmit)="searchUsers()" class="search-form">
         <nz-input-group nzSuffixIcon="search">
-          <input
-            type="text"
-            nz-input
-            formControlName="searchTerm"
-            placeholder="Search users by name..."
-          />
+          <input type="text" nz-input formControlName="searchTerm" placeholder="Search users by name..." />
         </nz-input-group>
         <button nz-button nzType="primary" type="submit">
           <nz-icon nzType="search"></nz-icon>
@@ -70,18 +65,8 @@
           placeholder="First Name *"
           style="width: 120px; margin-right: 8px"
         />
-        <input
-          nz-input
-          formControlName="lastName"
-          placeholder="Last Name"
-          style="width: 120px; margin-right: 8px"
-        />
-        <input
-          nz-input
-          formControlName="email"
-          placeholder="Email"
-          style="width: 150px; margin-right: 8px"
-        />
+        <input nz-input formControlName="lastName" placeholder="Last Name" style="width: 120px; margin-right: 8px" />
+        <input nz-input formControlName="email" placeholder="Email" style="width: 150px; margin-right: 8px" />
         <button nz-button nzType="primary" type="submit">
           <nz-icon nzType="plus"></nz-icon>
           Add User

@@ -1,16 +1,10 @@
 <div class="actions-bar" [ngClass]="{ 'align-right': alignRight }">
   @for (button of buttonConfig(); track button) {
-  <button
-    nz-button
-    [nzType]="button.type"
-    [nzSize]="button.size"
-    (click)="button.action()"
-    class="modal-button"
-  >
-    @if (button.icon) {
-    <nz-icon [nzType]="button.icon" nzTheme="outline" />
-    }
-    {{ button.text }}
-  </button>
+    <button nz-button [nzType]="button.type" [nzSize]="button.size" (click)="button.action()" class="modal-button">
+      @if (button.icon) {
+        <nz-icon [nzType]="button.icon" nzTheme="outline" />
+      }
+      {{ button.text }}
+    </button>
   }
 </div>

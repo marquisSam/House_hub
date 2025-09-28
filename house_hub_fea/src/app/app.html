@@ -1,45 +1,43 @@
-@if(currentUser()){
-<nz-avatar
-  class="current-user-avatar"
-  [nzText]="getCurrentUserInitials()"
-  [nzSize]="32"
-  nz-popover
-  nzType="primary"
-  nzPopoverTitle="Action utilisateur"
-  nzPopoverPlacement="rightBottom"
-  [nzPopoverContent]="contentTemplate"
-  [style.background-color]="getAvatarColor(currentUser()!)"
-></nz-avatar>
-<div class="main-layout">
-  <div class="sidebar" [class.collapsed]="isCollapsed()">
-    <button nz-button nzType="primary" (click)="toggleCollapsed()" class="collapse-btn">
-      <nz-icon [nzType]="isCollapsed() ? 'menu-unfold' : 'menu-fold'" />
-    </button>
-    <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="isCollapsed()">
-      <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected">
-        <nz-icon nzType="dashboard" />
-        <span>Tableau de bord</span>
-      </li>
-      <li nz-menu-item routerLink="/todos" routerLinkActive="ant-menu-item-selected">
-        <nz-icon nzType="check-circle" />
-        <span>Tâches</span>
-      </li>
-      <li nz-menu-item routerLink="/users-management" routerLinkActive="ant-menu-item-selected">
-        <nz-icon nzType="team" />
-        <span>Gestion des utilisateurs</span>
-      </li>
-    </ul>
+@if (currentUser()) {
+  <nz-avatar
+    class="current-user-avatar"
+    [nzText]="getCurrentUserInitials()"
+    [nzSize]="32"
+    nz-popover
+    nzType="primary"
+    nzPopoverTitle="Action utilisateur"
+    nzPopoverPlacement="rightBottom"
+    [nzPopoverContent]="contentTemplate"
+    [style.background-color]="getAvatarColor(currentUser()!)"
+  ></nz-avatar>
+  <div class="main-layout">
+    <div class="sidebar" [class.collapsed]="isCollapsed()">
+      <button nz-button nzType="primary" (click)="toggleCollapsed()" class="collapse-btn">
+        <nz-icon [nzType]="isCollapsed() ? 'menu-unfold' : 'menu-fold'" />
+      </button>
+      <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="isCollapsed()">
+        <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected">
+          <nz-icon nzType="dashboard" />
+          <span>Tableau de bord</span>
+        </li>
+        <li nz-menu-item routerLink="/todos" routerLinkActive="ant-menu-item-selected">
+          <nz-icon nzType="check-circle" />
+          <span>Tâches</span>
+        </li>
+        <li nz-menu-item routerLink="/users-management" routerLinkActive="ant-menu-item-selected">
+          <nz-icon nzType="team" />
+          <span>Gestion des utilisateurs</span>
+        </li>
+      </ul>
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-  <div class="content">
-    <router-outlet></router-outlet>
-  </div>
-</div>
-}@else{
-<app-user-select-view></app-user-select-view>
+} @else {
+  <app-user-select-view></app-user-select-view>
 }
 
 <ng-template #contentTemplate>
-  <button nz-button nzSize="small" nzType="primary" (click)="disconnectUser(false)">
-    Se déconnecter
-  </button>
+  <button nz-button nzSize="small" nzType="primary" (click)="disconnectUser(false)">Se déconnecter</button>
 </ng-template>

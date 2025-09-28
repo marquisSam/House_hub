@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, tap, catchError, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Todo } from '../models/todosModel';
 
 @Injectable({
@@ -32,17 +32,17 @@ export class TodoService {
   updateTodo(id: string, todoData: Partial<Todo>): Observable<Todo> {
     const url = `${this.baseUrl}/odata/Todos(${id})`;
 
-    return this.http.patch<any>(url, todoData).pipe(
-      map((response: any) => {
+    return this.http.patch<{ value?: Todo } | Todo>(url, todoData).pipe(
+      map((response: { value?: Todo } | Todo) => {
         // Handle OData response format and clean metadata
         let cleanTodo: Todo;
 
-        if (response && response.value) {
+        if ('value' in response && response.value) {
           // OData collection format
           cleanTodo = response.value;
-        } else if (response && response.Id) {
+        } else if ('Id' in response) {
           // Direct todo object
-          cleanTodo = response;
+          cleanTodo = response as Todo;
         } else {
           throw new Error('Invalid server response format');
         }

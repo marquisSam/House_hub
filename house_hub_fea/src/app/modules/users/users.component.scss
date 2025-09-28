@@ -206,7 +206,9 @@
 // Animation for user cards
 .users-list {
   app-user-card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition:
+      transform 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out;
 
     &:hover {
       transform: translateY(-2px);

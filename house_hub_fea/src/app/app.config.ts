@@ -14,7 +14,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { FamilyHubDataStore } from './data';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { provideNzConfig } from 'ng-zorro-antd/core/config';
 
 registerLocaleData(fr);
 

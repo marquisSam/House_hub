@@ -4,40 +4,35 @@
 </div>
 
 <div class="actions-bar content-padding">
-  <button
-    (click)="openCreateModal()"
-    nz-button
-    nzType="primary"
-    [nzSize]="'large'"
-    nzShape="circle"
-  >
+  <button (click)="openCreateModal()" nz-button nzType="primary" [nzSize]="'large'" nzShape="circle">
     <nz-icon nzType="plus" nzTheme="outline" />
   </button>
 </div>
 
 @if (error()) {
-<section class="content-padding">
-  <div class="error-message">
-    <p>{{ error() }}</p>
-    <button (click)="clearError()">Ignorer</button>
-  </div>
-</section>
+  <section class="content-padding">
+    <div class="error-message">
+      <p>{{ error() }}</p>
+      <button (click)="clearError()">Ignorer</button>
+    </div>
+  </section>
 }
 
 <section id="todo-grid " class="content-padding">
   <h2>Tâches Actuelles ({{ todosCount() }})</h2>
   <div class="grid">
     @if (isLoading()) {
-    <div class="spinner-overlay">Chargement...</div>
-    } @for (todo of todos(); track todo.Id) {
-    <app-todo-card
-      [todo]="todo"
-      (editTodo)="openEditModal($event)"
-      (toggleComplete)="toggleComplete($event)"
-      (deleteTodo)="deleteTodo($event)"
-    ></app-todo-card>
+      <div class="spinner-overlay">Chargement...</div>
+    }
+    @for (todo of todos(); track todo.Id) {
+      <app-todo-card
+        [todo]="todo"
+        (editTodo)="openEditModal($event)"
+        (toggleComplete)="toggleComplete($event)"
+        (deleteTodo)="deleteTodo($event)"
+      ></app-todo-card>
     } @empty {
-    <p>Aucune tâche trouvée.</p>
+      <p>Aucune tâche trouvée.</p>
     }
   </div>
 </section>

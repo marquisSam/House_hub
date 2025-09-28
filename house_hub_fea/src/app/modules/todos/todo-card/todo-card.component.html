@@ -1,9 +1,4 @@
-<nz-card
-  class="todo-card"
-  [nzTitle]="todo().Title"
-  [nzExtra]="actionsTemplate"
-  [class.completed]="todo().IsCompleted"
->
+<nz-card class="todo-card" [nzTitle]="todo().Title" [nzExtra]="actionsTemplate" [class.completed]="todo().IsCompleted">
   <!-- Todo Description -->
   <p class="todo-description">
     {{ todo().Description || 'Aucune description' }}
@@ -67,14 +62,7 @@
 <ng-template #actionsTemplate>
   <div class="card-actions">
     <!-- Edit Button -->
-    <button
-      nz-button
-      nzType="text"
-      nzSize="small"
-      (click)="onEdit()"
-      nz-tooltip
-      nzTooltipTitle="Modifier la tâche"
-    >
+    <button nz-button nzType="text" nzSize="small" (click)="onEdit()" nz-tooltip nzTooltipTitle="Modifier la tâche">
       <nz-icon nzType="edit"></nz-icon>
     </button>
 
@@ -85,9 +73,7 @@
       nzSize="small"
       (click)="onToggleComplete()"
       nz-tooltip
-      [nzTooltipTitle]="
-        todo().IsCompleted ? 'Marquer comme non terminée' : 'Marquer comme terminée'
-      "
+      [nzTooltipTitle]="todo().IsCompleted ? 'Marquer comme non terminée' : 'Marquer comme terminée'"
     >
       <nz-icon [nzType]="todo().IsCompleted ? 'undo' : 'check'"></nz-icon>
     </button>

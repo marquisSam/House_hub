@@ -100,7 +100,7 @@ const FamilyHubDataStore = signalStore(
       addTodo: createRxMethod<Partial<Todo>>('todoCreationPending', (todoData) =>
         todoService.createTodo(todoData).pipe(
           tap((newTodo: Todo) => {
-            console;
+            console.log('Todo created:', newTodo.Title);
             patchState(store, addEntities([newTodo], todoConfig));
           })
         )

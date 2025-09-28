@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { FamilyHubDataStore } from '../../data/store/familyHubDataStore';
 
-export const userSelectedGuard: CanActivateFn = (route, state) => {
+export const userSelectedGuard: CanActivateFn = (_route, _state) => {
   const store = inject(FamilyHubDataStore);
   const router = inject(Router);
 

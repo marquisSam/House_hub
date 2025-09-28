@@ -7,12 +7,7 @@
 
     <div class="form-field" id="description-field">
       <label for="Description">Description</label>
-      <textarea
-        rows="4"
-        nz-input
-        placeholder="Description de la tâche"
-        formControlName="Description"
-      ></textarea>
+      <textarea rows="4" nz-input placeholder="Description de la tâche" formControlName="Description"></textarea>
     </div>
 
     <div class="form-field">
@@ -22,26 +17,12 @@
 
     <div class="form-field">
       <label for="Priority">Priorité (1-5)</label>
-      <input
-        nz-input
-        type="number"
-        id="Priority"
-        formControlName="Priority"
-        min="1"
-        max="5"
-        placeholder="1"
-      />
+      <input nz-input type="number" id="Priority" formControlName="Priority" min="1" max="5" placeholder="1" />
     </div>
 
     <div class="form-field">
       <label for="Category">Catégorie</label>
-      <input
-        nz-input
-        type="text"
-        id="Category"
-        formControlName="Category"
-        placeholder="Travail, Personnel, etc."
-      />
+      <input nz-input type="text" id="Category" formControlName="Category" placeholder="Travail, Personnel, etc." />
     </div>
   </form>
   <app-action-btn-bar [buttonConfig]="buttonConfig()" [alignRight]="true"></app-action-btn-bar>
