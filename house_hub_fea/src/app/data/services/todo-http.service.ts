@@ -51,14 +51,18 @@ export class TodoService {
   }
 
   getTodos(): Observable<{ value: Todo[] }> {
-    return this.http.get<{ value: TodoBackendResponse[] }>(`${this.baseUrl}/odata/Todos`).pipe(
-      map((response) => ({
-        value: response.value.map((todo) => ({
-          ...todo,
-          AssignedUsers: todo.Users ? todo.Users.map((user: User) => user.Id) : [],
-        })) as Todo[],
-      }))
-    );
+    return this.http
+      .get<{
+        value: TodoBackendResponse[];
+      }>(`${this.baseUrl}/odata/Todos?$expand=Users($select=Id)`)
+      .pipe(
+        map((response) => ({
+          value: response.value.map((todo) => ({
+            ...todo,
+            AssignedUsers: todo.Users ? todo.Users.map((user: User) => user.Id) : [],
+          })) as Todo[],
+        }))
+      );
   }
 
   updateTodo(id: string, todoData: Partial<Todo>): Observable<Todo> {
