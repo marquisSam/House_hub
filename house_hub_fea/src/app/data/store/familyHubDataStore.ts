@@ -268,7 +268,6 @@ const FamilyHubDataStore = signalStore(
       todoEntities,
       userEntities,
       error,
-      appIsLoading,
       todoIsLoading,
       todoCreationPending,
       todoUpdatingPending,

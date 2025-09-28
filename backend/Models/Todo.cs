@@ -31,5 +31,9 @@ namespace HouseHub.Models
         public string? Category { get; set; }
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation properties for many-to-many relationship
+        public ICollection<TodoUser> TodoUsers { get; set; } = new List<TodoUser>();
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }

@@ -18,5 +18,7 @@ namespace HouseHub.Contracts
 
         [StringLength(50)]
         public string? Category { get; set; }
+
+        public List<Guid>? AssignedUserIds { get; set; } = new List<Guid>();
     }
 }

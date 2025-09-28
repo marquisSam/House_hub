@@ -24,6 +24,24 @@
       <label for="Category">Catégorie</label>
       <input nz-input type="text" id="Category" formControlName="Category" placeholder="Travail, Personnel, etc." />
     </div>
+
+    <div class="form-field" id="users-field">
+      <label for="AssignedUsers">Utilisateurs assignés</label>
+      <nz-select
+        id="AssignedUsers"
+        formControlName="AssignedUsers"
+        nzMode="tags"
+        nzPlaceHolder="Sélectionner des utilisateurs"
+        nzAllowClear="true"
+        nzShowArrow="true"
+        nzSize="default"
+        style="width: 100%"
+      >
+        @for (user of users(); track $index) {
+          <nz-option [nzLabel]="user.FirstName + ' ' + user.LastName" [nzValue]="user.Id"> </nz-option>
+        }
+      </nz-select>
+    </div>
   </form>
   <app-action-btn-bar [buttonConfig]="buttonConfig()" [alignRight]="true"></app-action-btn-bar>
 </div>

@@ -9,4 +9,5 @@ export interface Todo {
   Priority: number;
   Category: string | null;
   UpdatedAt: string;
+  AssignedUsers?: string[]; // Array of user IDs
 }

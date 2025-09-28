@@ -58,6 +58,7 @@ static void ConfigureServices(IServiceCollection services, WebApplicationBuilder
     
     services.AddScoped<ITodoServices, TodoServices>();
     services.AddScoped<IUserServices, UserServices>();
+    services.AddScoped<ITodoUserService, TodoUserService>();
 
     services.AddCors(options =>
     {

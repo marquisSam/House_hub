@@ -8,16 +8,16 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NzButtonModule, NzButtonType } from 'ng-zorro-antd/button';
-import { NzSizeLDSType } from 'ng-zorro-antd/core/types';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NZ_MODAL_DATA } from 'ng-zorro-antd/modal';
-import { Todo, FamilyHubDataStore } from '../../data';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import {
   ActionBtnBarComponent,
   familyHubButtonConfig,
 } from '../../components/action-btn-bar/action-btn-bar.component';
+import { FamilyHubDataStore, Todo, User } from '../../data';
 export enum ModalState {
   edit,
   create,
@@ -32,6 +32,7 @@ export enum ModalState {
     NzButtonModule,
     NzIconModule,
     NzInputModule,
+    NzSelectModule,
     ActionBtnBarComponent,
   ],
   templateUrl: './todo-form.component.html',
@@ -57,7 +58,11 @@ export class TodoFormComponent {
     });
     effect(() => {
       if (this.todoEntity()) {
-        this.isEditMode() ? this.form.enable() : this.form.disable();
+        if (this.isEditMode()) {
+          this.form.enable();
+        } else {
+          this.form.disable();
+        }
       }
     });
   }
@@ -83,6 +88,11 @@ export class TodoFormComponent {
     return ModalState.create;
   });
 
+  // Users for selection
+  users = computed<User[]>(() => {
+    return this.FamilyHubDataStore.activeUsers();
+  });
+
   // ==================== FORM SETUP ====================
 
   form: FormGroup = this.fb.group({
@@ -91,6 +101,7 @@ export class TodoFormComponent {
     DueDate: [''],
     Priority: [1, [Validators.required, Validators.min(1), Validators.max(5)]],
     Category: [''],
+    AssignedUsers: [[], []], // Array of user IDs
   });
 
   buttonConfig = computed<familyHubButtonConfig[]>(() => {
@@ -152,6 +163,7 @@ export class TodoFormComponent {
         id: this.todoEntity()!.Id,
         updates: {
           ...formValue,
+          AssignedUsers: formValue.AssignedUsers || [],
           UpdatedAt: new Date().toISOString(),
         },
       });
@@ -164,6 +176,7 @@ export class TodoFormComponent {
 
       this.FamilyHubDataStore.addTodo({
         ...formValue,
+        AssignedUsers: formValue.AssignedUsers || [],
         IsCompleted: false,
         CreatedAt: new Date().toISOString(),
         UpdatedAt: new Date().toISOString(),

@@ -1,0 +1,48 @@
+### Create test users first
+POST http://localhost:5113/odata/Users
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com"
+}
+
+###
+POST http://localhost:5113/odata/Users  
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@example.com"
+}
+
+### Get all users to get their IDs
+GET http://localhost:5113/odata/Users
+
+### Create todo without users first (to test basic functionality)
+POST http://localhost:5113/odata/Todos
+Content-Type: application/json
+
+{
+  "Title": "Test Todo without Users",
+  "Description": "Testing basic todo creation",
+  "Priority": 2,
+  "Category": "Test"
+}
+
+### Create todo with user assignments (replace user IDs with actual ones)
+POST http://localhost:5113/odata/Todos
+Content-Type: application/json
+
+{
+  "Title": "Test Todo with Users",
+  "Description": "Testing todo with user assignments",
+  "Priority": 1,
+  "Category": "Collaboration",
+  "AssignedUserIds": ["USER_ID_1", "USER_ID_2"]
+}
+
+### Get all todos to see if users are returned
+GET http://localhost:5113/odata/Todos

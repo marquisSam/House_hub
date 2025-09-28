@@ -1,0 +1,37 @@
+### Test Todo with User Assignment
+
+### Create a todo with assigned users
+POST http://localhost:5001/odata/Todos
+Content-Type: application/json
+
+{
+  "Title": "Test Todo with Users",
+  "Description": "This is a test todo with user assignments",
+  "Priority": 2,
+  "Category": "Test",
+  "AssignedUserIds": []
+}
+
+### Get all todos
+GET http://localhost:5001/odata/Todos
+
+### Update todo with user assignments
+PATCH http://localhost:5001/odata/Todos({{todoId}})
+Content-Type: application/json
+
+{
+  "Title": "Updated Todo with Users",
+  "AssignedUserIds": ["user-id-1", "user-id-2"]
+}
+
+### Get assigned users for a todo (if TodoUser endpoint exists)
+GET http://localhost:5001/api/TodoUser/todo/{{todoId}}/users
+
+### Assign user to todo (if TodoUser endpoint exists)
+POST http://localhost:5001/api/TodoUser/assign
+Content-Type: application/json
+
+{
+  "todoId": "{{todoId}}",
+  "userId": "{{userId}}"
+}
