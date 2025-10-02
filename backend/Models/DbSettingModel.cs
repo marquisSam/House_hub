@@ -1,9 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace HouseHub.Models
 {
     public class DbSettings
     {
-        public string ConnectionString { get; set; }
+        public required string ConnectionString { get; set; }
     }
 }

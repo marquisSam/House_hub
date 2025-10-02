@@ -20,16 +20,33 @@ namespace HouseHub.Middleware
             _logger.LogError(
                 $"An error occurred while processing your request: {exception.Message}");
 
-            var errorResponse = new ErrorResponse
+            ErrorResponse? errorResponse = new ErrorResponse
             {
+                Title = "Error",
                 Message = exception.Message
             };
 
             switch (exception)
             {
+                case ArgumentNullException:
+                case ArgumentException:
+                    errorResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                    errorResponse.Title = "Bad Request";
+                    break;
+
+                case KeyNotFoundException:
+                    errorResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                    errorResponse.Title = "Not Found";
+                    break;
+
+                case UnauthorizedAccessException:
+                    errorResponse.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    errorResponse.Title = "Unauthorized";
+                    break;
+
                 case BadHttpRequestException:
                     errorResponse.StatusCode = (int)HttpStatusCode.BadRequest;
-                    errorResponse.Title = exception.GetType().Name;
+                    errorResponse.Title = "Bad Request";
                     break;
 
                 default:
@@ -53,6 +70,6 @@ namespace HouseHub.Middleware
     public class ErrorResponse
     {
         public int StatusCode { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
+        public required string Title { get; set; }
+        public required string Message { get; set; }
     }

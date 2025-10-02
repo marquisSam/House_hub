@@ -1,11 +1,8 @@
 using HouseHub.Interface;
 using HouseHub.Contracts;
-using HouseHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.AspNetCore.OData.Results;
-using System.Linq;
 
 namespace HouseHub.Controllers
 {
@@ -20,160 +17,92 @@ namespace HouseHub.Controllers
             _logger = logger;
         }
 
-        // GET: odata/Todos
         [EnableQuery(PageSize = 20)]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var todos = await _todoServices.GetAllTodos();
-                return Ok(todos);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while getting todos");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
-            }
+            IEnumerable<Models.Todo>? todos = await _todoServices.GetAllTodos();
+            return Ok(todos);
         }
 
-        // GET: odata/Todos(guid)
         [EnableQuery]
         public async Task<IActionResult> Get([FromRoute] Guid key)
         {
-            try
-            {
-                var todo = await _todoServices.GetByIdAsync(key);
-                return Ok(todo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while getting todo with id: {key}");
+            Models.Todo? todo = await _todoServices.GetByIdAsync(key);
+            if (todo == null)
                 return NotFound($"Todo with id {key} not found.");
-            }
+            return Ok(todo);
         }
 
-        // POST: odata/Todos
         [EnableQuery]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateTodosRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            try
-            {
-                var todo = await _todoServices.CreateAsync(request);
-                // Ensure Users navigation property is included in the response
-                return Created(todo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating todo");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            Models.Todo? todo = await _todoServices.CreateAsync(request);
+            return Created(todo);
         }
 
-        // PUT: odata/Todos(guid) - Full replacement
         public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] CreateTodosRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            try
+            Models.Todo? existingTodo = await _todoServices.GetByIdAsync(key);
+            if (existingTodo == null)
+                return NotFound($"Todo with id {key} not found.");
+
+            UpdateTodoRequest? updateRequest = new UpdateTodoRequest
             {
-                // PUT should replace the entire resource
-                var existingTodo = await _todoServices.GetByIdAsync(key);
-                if (existingTodo == null)
-                {
-                    return NotFound($"Todo with id {key} not found.");
-                }
+                Title = request.Title,
+                Description = request.Description,
+                DueDate = request.DueDate,
+                Priority = request.Priority,
+                Category = request.Category,
+                IsCompleted = false
+            };
 
-                // Create a new todo object with all required fields
-                var updateRequest = new UpdateTodoRequest
-                {
-                    Title = request.Title,
-                    Description = request.Description,
-                    DueDate = request.DueDate,
-                    Priority = request.Priority,
-                    Category = request.Category,
-                    IsCompleted = false // Reset completion status for full replacement
-                };
-
-                var todo = await _todoServices.UpdateAsync(key, updateRequest);
-                return Updated(todo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while replacing todo with id: {key}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var todo = await _todoServices.UpdateAsync(key, updateRequest);
+            return Updated(todo);
         }
 
-        // PATCH: odata/Todos(guid) - Partial update
         [HttpPatch]
         [EnableQuery]
         public async Task<IActionResult> Patch([FromRoute] Guid key, [FromBody] UpdateTodoRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            try
-            {
-                var existingTodo = await _todoServices.GetByIdAsync(key);
-                if (existingTodo == null)
-                {
-                    return NotFound($"Todo with id {key} not found.");
-                }
+            Models.Todo? existingTodo = await _todoServices.GetByIdAsync(key);
+            if (existingTodo == null)
+                return NotFound($"Todo with id {key} not found.");
 
-                var updatedTodo = await _todoServices.UpdateAsync(key, request);
-                if (updatedTodo == null)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Update operation failed");
-                }
-                
-                // Users navigation property is already included from the service
-                return Ok(updatedTodo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while partially updating todo with id: {key}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            Models.Todo? updatedTodo = await _todoServices.UpdateAsync(key, request);
+            if (updatedTodo == null)
+                throw new InvalidOperationException("Update operation failed");
+
+            return Ok(updatedTodo);
         }
 
-        // Alternative PATCH route for OData guid format
         [HttpPatch("({key})")]
+        [EnableQuery]
         public async Task<IActionResult> PatchAlternative([FromRoute] string key, [FromBody] UpdateTodoRequest request)
         {
-            // Parse the GUID from string (handles both "guid'value'" and plain "value" formats)
             if (!Guid.TryParse(key.Replace("guid'", "").Replace("'", ""), out Guid guidKey))
-            {
                 return BadRequest($"Invalid GUID format: {key}");
-            }
 
             return await Patch(guidKey, request);
         }
 
-        // DELETE: odata/Todos(guid)
         public async Task<IActionResult> Delete([FromRoute] Guid key)
         {
-            try
-            {
-                var todo = await _todoServices.DeleteAsync(key);
-                _logger.LogInformation($"Todo deleted successfully: {todo.Title}");
-                return todo != null ? Ok(todo.Id) : NotFound($"Todo with id {key} not found.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while deleting todo with id: {key}");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            Models.Todo? todo = await _todoServices.DeleteAsync(key);
+            if (todo == null)
+                return NotFound($"Todo with id {key} not found.");
+            
+            _logger.LogInformation($"Todo deleted successfully: {todo.Title}");
+            return Ok(todo.Id);
         }
     }
 }

@@ -1,11 +1,8 @@
 using HouseHub.Interface;
 using HouseHub.Contracts;
-using HouseHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.AspNetCore.OData.Results;
-using System.Linq;
 
 namespace HouseHub.Controllers
 {
@@ -24,17 +21,8 @@ namespace HouseHub.Controllers
         [EnableQuery(PageSize = 20)]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var users = await _userServices.GetAllUsers();
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while getting users: {Message}", ex.Message);
-                _logger.LogError(ex, "Stack trace: {StackTrace}", ex.StackTrace);
-                throw; // Re-throw to see the full exception details
-            }
+            IEnumerable<Models.User>? users = await _userServices.GetAllUsers();
+            return Ok(users);
         }
 
         // GET: api/Users/test - Simple test endpoint
@@ -48,107 +36,51 @@ namespace HouseHub.Controllers
         [EnableQuery]
         public async Task<IActionResult> Get([FromRoute] Guid key)
         {
-            try
-            {
-                var user = await _userServices.GetByIdAsync(key);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while getting user with id: {key}");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
-            }
+            Models.User? user = await _userServices.GetByIdAsync(key);
+            if (user == null)
+                return NotFound($"User with id {key} not found.");
+            return Ok(user);
         }
 
         // POST: odata/Users
         public async Task<IActionResult> Post([FromBody] CreateUserRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            try
-            {
-                var user = await _userServices.CreateAsync(request);
-                return Created(user);
-            }
-            catch (InvalidOperationException ex) when (ex.Message.Contains("email already exists"))
-            {
-                return Conflict(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating user");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
-            }
+            Models.User? user = await _userServices.CreateAsync(request);
+            return Created(user);
         }
 
         // PUT: odata/Users(guid)
         public async Task<IActionResult> Put([FromRoute] Guid key, [FromBody] UpdateUserRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            try
-            {
-                var user = await _userServices.UpdateAsync(key, request);
-                return Updated(user);
-            }
-            catch (InvalidOperationException ex) when (ex.Message.Contains("email already exists"))
-            {
-                return Conflict(new { message = ex.Message });
-            }
-            catch (Exception ex) when (ex.Message == "User not found")
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while updating user with id: {key}");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
-            }
+            Models.User? user = await _userServices.UpdateAsync(key, request);
+            return Updated(user);
         }
 
         // DELETE: odata/Users(guid)
         public async Task<IActionResult> Delete([FromRoute] Guid key)
         {
-            try
-            {
-                var user = await _userServices.DeleteAsync(key);
-                return Ok(user);
-            }
-            catch (Exception ex) when (ex.Message == "User not found")
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while deleting user with id: {key}");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
-            }
+            Models.User? user = await _userServices.DeleteAsync(key);
+            if (user == null)
+                return NotFound($"User with id {key} not found.");
+            
+            _logger.LogInformation($"User deleted successfully: {user.Email}");
+            return Ok(user);
         }
 
         // GET: odata/Users/GetByEmail?email=test@example.com
         [HttpGet("GetByEmail")]
         public async Task<IActionResult> GetByEmail([FromQuery] string email)
         {
-            try
-            {
-                var user = await _userServices.GetByEmailAsync(email);
-                return Ok(user);
-            }
-            catch (Exception ex) when (ex.Message == "User not found")
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while getting user with email: {email}");
-                return StatusCode(500, "An unexpected error occurred. Please try again later.");
-            }
+            Models.User? user = await _userServices.GetByEmailAsync(email);
+            if (user == null)
+                return NotFound($"User with email {email} not found.");
+            return Ok(user);
         }
     }
 }
