@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace HouseHub.Models
 {
@@ -48,7 +49,11 @@ namespace HouseHub.Models
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties for many-to-many relationship
+        [JsonIgnore] // Ignore this to prevent circular reference
         public ICollection<TodoUser> TodoUsers { get; set; } = new List<TodoUser>();
+        
+        // This is the collection we want to expose in JSON (but typically ignored to prevent circular refs)
+        [JsonIgnore]
         public ICollection<Todo> Todos { get; set; } = new List<Todo>();
     }
 }
