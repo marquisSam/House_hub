@@ -1,4 +1,4 @@
-namespace HouseHub.Contracts
+namespace HouseHub.Interface
 {
     public interface IApiResponse<T>
     {

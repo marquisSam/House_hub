@@ -1,6 +1,6 @@
 using HouseHub.Models;
 
-namespace HouseHub.Services
+namespace HouseHub.Interface
 {
     public interface ITodoUserService
     {
